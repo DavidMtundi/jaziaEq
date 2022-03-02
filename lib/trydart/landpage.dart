@@ -1,24 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jazia/custom_widgets/imagewidget.dart';
-import 'package:jazia/custom_widgets/tilesdata.dart';
 import 'package:jazia/trydart/gridcategory.dart';
 import 'package:jazia/trydart/landorder.dart';
 import 'package:jazia/trydart/uploadonly.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
-
 
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../custom_widgets/items.dart';
 
 var date = ValueNotifier<DateTime>(DateTime.now());
-
 
 class LandExisting extends StatefulWidget {
   const LandExisting({Key? key}) : super(key: key);
@@ -32,20 +26,17 @@ class _LandExistingState extends State<LandExisting>
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late Future<String> _inst;
 
-  int index = 0 ;
+  int index = 0;
   bool _show = false;
 
   PageController _pageController = PageController();
   late AnimationController _animationController;
 
-
-
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-
-
-  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('business')
+  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
+      .collection('business')
       .doc('electronics')
       .collection('items')
       .snapshots();
@@ -54,10 +45,8 @@ class _LandExistingState extends State<LandExisting>
   ///
   ///
 
-  Widget? _showBottomSheet()
-  {
-    if(_show)
-    {
+  Widget? _showBottomSheet() {
+    if (_show) {
       return BottomAppBar(
         shape: CircularNotchedRectangle(),
         notchMargin: 6,
@@ -90,25 +79,23 @@ class _LandExistingState extends State<LandExisting>
           },
         ),*/
         child: SolidBottomSheet(
-            headerBar: Container(
-                color: Colors.transparent,
-                height: 58,
-                child: bottomBarRow()),
-            body:  Material(
-                child: Container(
-                  height: 100,
-                  width: double.infinity,
-                  color: Colors.red,
-                ),
+          headerBar: Container(
+              color: Colors.transparent, height: 58, child: bottomBarRow()),
+          body: Material(
+            child: Container(
+              height: 100,
+              width: double.infinity,
+              color: Colors.red,
             ),
+          ),
         ),
       );
-    }
-    else{
+    } else {
       return null;
     }
   }
-///WIDGET BOTTOMBAR
+
+  ///WIDGET BOTTOMBAR
   ///
 
   Widget bottomBarRow() {
@@ -131,11 +118,11 @@ class _LandExistingState extends State<LandExisting>
               label: 'Home',
               color: index == 0
                   ? Theme.of(context).brightness == Brightness.light
-                  ? Colors.teal
-                  : Colors.red
+                      ? Colors.teal
+                      : Colors.red
                   : Theme.of(context).brightness == Brightness.light
-                  ? Colors.black
-                  : Colors.white),
+                      ? Colors.black
+                      : Colors.white),
           Items(
               size: size,
               icon: Icons.settings,
@@ -147,11 +134,11 @@ class _LandExistingState extends State<LandExisting>
               label: 'Settings',
               color: index == 1
                   ? Theme.of(context).brightness == Brightness.light
-                  ? Colors.teal
-                  : Colors.red
+                      ? Colors.teal
+                      : Colors.red
                   : Theme.of(context).brightness == Brightness.light
-                  ? Colors.black
-                  : Colors.white),
+                      ? Colors.black
+                      : Colors.white),
         ],
       ),
     );
@@ -169,10 +156,7 @@ class _LandExistingState extends State<LandExisting>
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-
       body: PageView(
         controller: _pageController,
         onPageChanged: (int i) {
@@ -190,25 +174,25 @@ class _LandExistingState extends State<LandExisting>
                 pinned: true,
                 snap: false,
                 centerTitle: false,
-               // backgroundColor: Colors.black,
-               //title: Text('appBar', style:TextStyle(color: Colors.green),),
+                // backgroundColor: Colors.black,
+                //title: Text('appBar', style:TextStyle(color: Colors.green),),
                 //flexibleSpace: FlexibleSpaceBar(
-                  title: RichText(
-                      text: TextSpan(
-                          text: 'Jazia',
-                          style: GoogleFonts.orbitron(
-                            textStyle:
-                            const TextStyle(color: Colors.red, letterSpacing: .5),
-                            fontSize: 23,
-                            fontWeight: FontWeight.w200,
-                          ),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ' Window Mode',
-                                style: GoogleFonts.lexendDeca(
-                                    textStyle: const TextStyle(
-                                        color: Colors.blueAccent, fontSize: 14)))
-                          ])),
+                title: RichText(
+                    text: TextSpan(
+                        text: 'Jazia',
+                        style: GoogleFonts.orbitron(
+                          textStyle: const TextStyle(
+                              color: Colors.red, letterSpacing: .5),
+                          fontSize: 23,
+                          fontWeight: FontWeight.w200,
+                        ),
+                        children: <TextSpan>[
+                      TextSpan(
+                          text: ' Window Mode',
+                          style: GoogleFonts.lexendDeca(
+                              textStyle: const TextStyle(
+                                  color: Colors.blueAccent, fontSize: 14)))
+                    ])),
                 //),
                 actions: <Widget>[
                   Row(
@@ -240,24 +224,24 @@ class _LandExistingState extends State<LandExisting>
                   ),
                 ],
                 bottom: AppBar(
-          title: Row(
-            children: [
-              Container(
-              //width: double.infinity,
-                width: MediaQuery.of(context).size.width/1.4,
-                height: 40,
-                color: Colors.white,
-                child: const Center(
-                  child: TextField(
-                    decoration: InputDecoration(
-                        hintText: 'Search for something',
-                        prefixIcon: Icon(Icons.search),
-                       // suffixIcon: Icon(Icons.camera_alt)
-                    ),
-                  ),
-                ),
-              ),
-             /* Padding(
+                  title: Row(
+                    children: [
+                      Container(
+                        //width: double.infinity,
+                        width: MediaQuery.of(context).size.width / 1.4,
+                        height: 40,
+                        color: Colors.white,
+                        child: const Center(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Search for something',
+                              prefixIcon: Icon(Icons.search),
+                              // suffixIcon: Icon(Icons.camera_alt)
+                            ),
+                          ),
+                        ),
+                      ),
+                      /* Padding(
                 padding: EdgeInsets.only(left: 10.0),
                 child:  CupertinoSwitch(
                   value: _lights,
@@ -267,7 +251,7 @@ class _LandExistingState extends State<LandExisting>
                     });
                   },
                 ),
-                *//*child: ToggleSwitch(
+                */ /*child: ToggleSwitch(
                   minWidth: 35.0,
                   minHeight: 20.0,
                   cornerRadius: 20.0,
@@ -282,61 +266,64 @@ class _LandExistingState extends State<LandExisting>
                   onToggle: (index) {
                     print('switched to: $index');
                   },
-                ),*//*
+                ),*/ /*
               ),*/
-            ],
-          ),
-    ),
+                    ],
+                  ),
+                ),
               ),
               SliverList(
-                  delegate: SliverChildListDelegate(
-                      [
-                        Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(15),
-                              child: Text('Toggle for Order Mode'),
-                            ),
-                            const Divider(
-                              height: 5,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    style: BorderStyle.solid,
-                                    width: 2,
-                                  ),
-                                ),
-                                height: MediaQuery.of(context).size.height/3,
-                                width: double.infinity,
-                                //color: Colors.greenAccent,
-                                child: GridWidget(),
-                              ),
-                            ),
-                            StreamBuilder<QuerySnapshot>(
-                              stream: _usersStream,
-                              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (snapshot.hasError) {
-                                  return const Text('Something went wrong');
-                                }
+                  delegate: SliverChildListDelegate([
+                Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Text('Toggle for Order Mode'),
+                    ),
+                    const Divider(
+                      height: 5,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                            style: BorderStyle.solid,
+                            width: 2,
+                          ),
+                        ),
+                        height: MediaQuery.of(context).size.height / 3,
+                        width: double.infinity,
+                        //color: Colors.greenAccent,
+                        child: GridWidget(),
+                      ),
+                    ),
+                    StreamBuilder<QuerySnapshot>(
+                      stream: _usersStream,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return const Text('Something went wrong');
+                        }
 
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Text("Loading");
-                                }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Text("Loading");
+                        }
 
-                                return Column(
-                                  children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                                    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                                    return BodyWidget(
-                                      wig_des: data['description'],
-                                      wig_name: data['name'],
-                                      wig_price: data['price'],
-                                      wig_url: data['url'],
-                                    );
-                                    /*ListTile(
+                        return Column(
+                          children: snapshot.data!.docs
+                              .map((DocumentSnapshot document) {
+                            Map<String, dynamic> data =
+                                document.data()! as Map<String, dynamic>;
+                            return BodyWidget(
+                              wig_des: data['description'],
+                              wig_name: data['name'],
+                              wig_price: data['price'],
+                              wig_url: data['url'],
+                            );
+                            /*ListTile(
                                       leading: CircleAvatar(
                                         child: ClipOval(
                                           child: CachedNetworkImage(
@@ -382,24 +369,24 @@ class _LandExistingState extends State<LandExisting>
                                       dense: true,
                                       //selected: true,
                                     );*/
-                                  }).toList(),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ]
-                  ))
+                          }).toList(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ]))
             ],
           ),
           LandOrder()
         ],
       ),
       bottomSheet: _showBottomSheet(),
-      floatingActionButton: FloatingActionButton(
-          onPressed: (){setState(() {
-        _show = true;
-      });}),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        setState(() {
+          _show = true;
+        });
+      }),
     );
   }
 }

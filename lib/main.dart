@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:jazia/auth/auth.dart';
-import 'package:jazia/screens/postsale.dart';
 import 'package:jazia/services/app_theme.dart';
 import 'package:jazia/services/constants.dart';
 import 'package:jazia/services/theme_notifier.dart';
 import 'package:jazia/trydart/landorder.dart';
-import 'package:jazia/trydart/landpage.dart';
-import 'package:jazia/trydart/readonly.dart';
-import 'package:jazia/trydart/toogle.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Smsfunctions/GetMessages.dart';
 import 'firebase_options.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-
 
 ThemeNotifier? themeNotifier;
 SharedPreferences? prefs;
@@ -32,6 +26,7 @@ void onThemeChanged(String value) async {
   }
   prefs?.setString(Constants.APP_THEME, value);
 }
+
 getTheme() async {
   var prefs = await SharedPreferences.getInstance();
   themeMode = prefs.getString(Constants.APP_THEME);
@@ -42,9 +37,7 @@ getTheme() async {
       : iconData = Icons.brightness_7;
 }
 
-
-
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -69,32 +62,43 @@ void main() async {
     );
   });
 
- // runApp(MyApp());
+  // runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var deviceData = <String, dynamic>{};
+  @override
+  void initState() {
+    super.initState();
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+    print("the fingerprint id is ${deviceFingerprint.toString()}");
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: AppTheme().lightTheme,
-      darkTheme: AppTheme().darkTheme,
-      themeMode: themeNotifier.getThemeMode(),
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/landorder': (context) => LandOrder(),
+        title: 'Flutter Demo',
+        theme: AppTheme().lightTheme,
+        darkTheme: AppTheme().darkTheme,
+        themeMode: themeNotifier.getThemeMode(),
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        routes: {
+          '/landorder': (context) => const LandOrder(),
+        },
+        //home: const PostSale(),
+        home: AuthService().handleAuth() //const LandExisting(),
+        //home:  const LandOrder(),
 
-      },
-      //home: const PostSale(),
-      home: AuthService().handleAuth()//const LandExisting(),
-      //home:  const LandOrder(),
-
-    );
+        );
   }
 }
 
