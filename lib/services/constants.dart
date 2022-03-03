@@ -20,3 +20,5 @@ class Constants {
   // ignore: non_constant_identifier_names
   static String day_animation = "Daynight_reverse";
 }
+
+bool hasDownloadOccured = false;
