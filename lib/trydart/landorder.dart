@@ -20,7 +20,7 @@ class _LandOrderState extends State<LandOrder> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late Future<String> _inst;
 
-  TextEditingController? _controller;
+  TextEditingController _controller = TextEditingController();
 
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -96,7 +96,7 @@ class _LandOrderState extends State<LandOrder> {
                   IconButton(
                     icon: const Icon(Icons.table_chart),
                     onPressed: () async {
-                      //Navigator.pushNamed(context, '/eighth');
+                      Navigator.pushNamed(context, '/chatrequests');
                     },
                   ),
                   IconButton(
@@ -219,7 +219,16 @@ class _LandOrderState extends State<LandOrder> {
                   child: SizedBox(
                     width: double.infinity,
                     child:
-                        ElevatedButton(onPressed: () {}, child: Text('Submit')),
+                        ElevatedButton(onPressed: () {
+                          firestore.collection('business').doc('electronics').collection('requests').doc().set({
+                            'User':_auth.currentUser!.uid,
+                            'Name':_auth.currentUser!.displayName,
+                            'UserUrl':_auth.currentUser!.photoURL,
+                            'Message': _controller.text,
+                            'Time': DateTime.now()
+                          });
+                          //print(_controller.text);
+                        }, child: Text('Submit')),
                   ),
                 ),
               ],

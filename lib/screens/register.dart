@@ -423,7 +423,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
                                 Text('Select Date of Birth', style: _style),
-                                SizedBox(
+                                const SizedBox(
                                   width: 30,
                                 ),
                                 IconButton(
@@ -444,11 +444,11 @@ class _RegisterFormState extends State<RegisterForm> {
                                         print(dateTime);
                                       }
                                     },
-                                    icon: Icon(
+                                    icon: const Icon(
                                       CupertinoIcons.calendar,
                                       size: 35,
                                     )),
-                                SizedBox(
+                                const SizedBox(
                                   width: 30,
                                 ),
                                 Text(
@@ -457,7 +457,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                 )
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Divider(
@@ -513,7 +513,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                         lastName = lastname.text;
                                         regNum = regNo.text;
                                       });
-                                      firestore
+                                     /* firestore
                                           .collection('users')
                                           .doc(user!.uid)
                                           .set({
@@ -556,7 +556,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                         department.dispose();
                                         course.dispose();
                                         Navigator.of(context).pop();
-                                      });
+                                      });*/
                                     }
                                   }
                                       : () {
@@ -701,12 +701,12 @@ FirebaseFirestore firestore = FirebaseFirestore.instance;
                     return DeptDialog(document: widget.document);
                   });
             },
-            child: Icon(
+            child: const Icon(
               CupertinoIcons.chevron_back,
               // size: 18,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 15,
           ),
           Flexible(
