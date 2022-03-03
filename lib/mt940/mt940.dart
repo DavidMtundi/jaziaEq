@@ -12,7 +12,7 @@ class Mt940Conversion {
   61:2107030703D5,NTRF435688:86:STATEMENT PRINTING CHARGES    
   :61:2107030703D0,80NTRF435688:86:VAT CHARGE
   :62F:C210703USD62302,:64:C210703USD2832352,54""";
-
+  String message = "";
   String getTransactionRefNumber(String message) {
     var first = RegExp(r'(\:+["20"]+\:+([0-9]))\d+');
     String valuegiven = first.firstMatch(message)!.group(0).toString();
@@ -122,4 +122,13 @@ class Mt940Conversion {
 
     return transactionref;
   }
+
+  // String transactionRef = getTransactionRefNumber(message);
+  // String accountidentification = getAccountIdentification(testmt940);
+  // String statementNumber = getStatementNumberandSequence(testmt940);
+  // String openingBalance = getOpeningBalance(testmt940);
+  // String statementline = getStatementLine(testmt940);
+  // String statementlinenarrative = getStatementLineNarrative(testmt940);
+  // String closingBalance = getClosingBalance(testmt940);
+  // String closingAvailableBalance = getClosingAvailableBalance(testmt940);
 }
