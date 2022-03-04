@@ -61,7 +61,8 @@ class BottomBarTiles extends StatefulWidget {
         this.hasSubtitle,
         this.subtitle,
         this.index,
-        this.color})
+        this.color,
+      this.page})
       : super(key: key);
   final image;
   final title;
@@ -69,6 +70,7 @@ class BottomBarTiles extends StatefulWidget {
   final subtitle;
   final index;
   final color;
+  final page;
   @override
   _BottomBarTilesState createState() => _BottomBarTilesState();
 }
@@ -81,7 +83,9 @@ class _BottomBarTilesState extends State<BottomBarTiles> {
       onTap: () {
         if (kDebugMode) {
           print(widget.title);
+          print(widget.page);
         }
+        Navigator.pushNamed(context, widget.page);
       },
       leading: Card(
         color: Theme.of(context).brightness == Brightness.dark

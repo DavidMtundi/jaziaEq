@@ -99,6 +99,7 @@ class _LandExistingState extends State<LandExisting>
                       image: data['image'],
                       subtitle: data['sub'],
                       hasSubtitle: data['hasSub'],
+                      page: data['page'],
                     );
                   },
                   itemCount: BottomSheetData().bottomSheetTiles.length,

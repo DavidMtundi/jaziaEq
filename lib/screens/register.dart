@@ -257,6 +257,28 @@ class _RegisterFormState extends State<RegisterForm> {
                                 //         BorderRadius.circular(10))
                               ),
                             ),
+                            const SizedBox(height: 15),
+                            TextFormField(
+                              controller: idnumber,
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return 'please enter your Phone number';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                fillColor: Theme.of(context).brightness ==
+                                    Brightness.light
+                                    ? Colors.blue.withOpacity(.1)
+                                    : Colors.red.withOpacity(.1),
+                                filled: true,
+                                labelText: 'Phone number',
+                                labelStyle: _style.copyWith(fontSize: 12),
+                                // border: OutlineInputBorder(
+                                //     borderRadius:
+                                //         BorderRadius.circular(10))
+                              ),
+                            ),
                             const SizedBox(
                               height: 20,
                             ),

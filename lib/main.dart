@@ -1,13 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:jazia/auth/auth.dart';
 import 'package:jazia/mt940/Screens/mt940screen.dart';
 import 'package:jazia/chatfiles/chatpage.dart';
 import 'package:jazia/chatfiles/chatrequest.dart';
+import 'package:jazia/screens/indevelopment.dart';
+import 'package:jazia/screens/register.dart';
+import 'package:jazia/screens/registernew.dart';
 import 'package:jazia/services/app_theme.dart';
 import 'package:jazia/services/constants.dart';
 import 'package:jazia/services/theme_notifier.dart';
 import 'package:jazia/trydart/landorder.dart';
+import 'package:jazia/trydart/readonly.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Smsfunctions/GetMessages.dart';
@@ -86,7 +91,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
-    print("the fingerprint id is ${deviceFingerprint.toString()}");
+    if (kDebugMode) {
+      print("the fingerprint id is ${deviceFingerprint.toString()}");
+    }
     return MaterialApp(
         title: 'Flutter Demo',
         theme: AppTheme().lightTheme,
@@ -97,7 +104,11 @@ class _MyAppState extends State<MyApp> {
         routes: {
           '/landorder': (context) => const LandOrder(),
           '/chatrequests': (context) => const ChatReq(),
-          '/mt940download': (context) => Mt940Screen()
+          '/mt940download': (context) => Mt940Screen(),
+          '/registernewform': (context) => const RegisterNewForm(),
+          '/registerform': (context) => const RegisterForm(),
+          '/myitems': (context) => const ProfileExisting(),
+          '/indevelopment': (context) => const InDevelopment(),
         },
         //home: const PostSale(),
         home: AuthService().handleAuth() //const LandExisting(),

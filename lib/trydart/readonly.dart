@@ -35,152 +35,20 @@ class _ProfileExistingState extends State<ProfileExisting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Container(
-        height: double.infinity,
-        width: MediaQuery.of(context).size.width / 1.2,
-        child: Drawer(
-          child: StreamBuilder<DocumentSnapshot>(
-            stream: firestore
-                .collection('users')
-                .doc('0630177567522')
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                DocumentSnapshot? doc = snapshot.data;
-                return ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
-                    DrawerHeader(
-                      child: Stack(
-                        children: [
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Card(
-                              elevation: 20,
-                              color: Colors.greenAccent,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration:
-                                  BoxDecoration(shape: BoxShape.circle),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(25),
-                                    child: CachedNetworkImage(
-                                      ///**/Hapa kuna mambo
-                                      imageUrl: doc!["image"],
-                                      placeholder: (context, url) =>
-                                          CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 0.0, bottom: 8),
-                                  child: Text(
-                                    '${doc['name']}',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ),
-                                Text(
-                                  '${doc['accBal']}',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.blueGrey.withOpacity(0.6),
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Padding(
-                                padding: EdgeInsets.all(3),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    /*IconButton(
-                                                  icon: Icon(Icons.palette_outlined),
-                                                  onPressed: () {
-                                              }),*/
-                                    IconButton(
-                                        icon: Icon(Icons.wb_sunny),
-                                        onPressed: () {
-                                          /* setState(() {
-                                            EasyDynamicTheme.of(context)
-                                                .changeTheme();
-                                          });*/
-                                        })
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      /* child: Text('Elegant Paul'),
-                            decoration: BoxDecoration(
-                            gradient:  LinearGradient(
-                            begin: Alignment.topRight,
-                            end: Alignment.bottomLeft,
-                            colors: [Colors.blueGrey, Colors.lightBlueAccent]
-                            ),
-                          ),*/
-                    ),
-                    ListTile(
-                      title: Text('Name: ${doc['name']}'),
-                      leading: const Icon(Icons.person),
-                      onTap: () {
-                       // Navigator.pushNamed(context, '/sixth');
-                      },
-                      trailing: const Icon(Icons.edit),
-                    ),
-                    ListTile(
-                      title: Text('IdNo: ${doc['idno']}'),
-                      leading: const Icon(Icons.phone),
-                    ),
-                  ],
-                );
-              } else {
-                return Text('none');
-              }
-            },
-          ),
-        ),
-      ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 100,
             floating: false,
             pinned: true,
-            backgroundColor: Colors.black,
+           // backgroundColor: Colors.black,
             flexibleSpace: FlexibleSpaceBar(
               title: RichText(
                   text: TextSpan(
                       text: 'Jazia',
                       style: GoogleFonts.orbitron(
-                        textStyle:
-                        const TextStyle(color: Colors.blue, letterSpacing: .5),
+                        //textStyle:
+                        //const TextStyle(color: Colors.blue, letterSpacing: .5),
                         fontSize: 21,
                         fontWeight: FontWeight.w200,
                       ),
