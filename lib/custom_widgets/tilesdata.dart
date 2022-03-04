@@ -20,11 +20,11 @@ class BottomSheetData {
     },
     {
       'title': 'Sell an item',
-      'hasSub': false,
-      'sub': '',
+      'hasSub': true,
+      'sub': 'Post ads and sell your items, See buyer requests in your category',
       'image': 'assets/lostnfound.png',
       'color': Colors.blue,
-      'page':'/myitems',
+      'page':'/verifyseller',
     },
     {
       'title': 'Settings',

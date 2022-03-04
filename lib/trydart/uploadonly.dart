@@ -34,6 +34,7 @@ class _UploadDialogBoxState extends State<UploadDialogBox> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseStorage storage = FirebaseStorage.instance;
 
+
   // get permissions
 
   ///Image picker upload and url retrieve
