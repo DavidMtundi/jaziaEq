@@ -31,10 +31,10 @@ class _LandExistingState extends State<LandExisting>
   int index = 0;
   bool _show = false;
 
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   late AnimationController _animationController;
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
