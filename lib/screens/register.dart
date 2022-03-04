@@ -1,8 +1,11 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,8 +13,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../main.dart';
 
 TextStyle _style = GoogleFonts.varelaRound();
-final course = ValueNotifier<String>('');
-final department = ValueNotifier<String>('');
+var accountNumber = ValueNotifier<String>('');
+
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({Key? key}) : super(key: key);
@@ -24,7 +27,7 @@ class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController firstname = TextEditingController();
   TextEditingController lastname = TextEditingController();
-  TextEditingController regNo = TextEditingController();
+  TextEditingController idnumber = TextEditingController();
   User? user = FirebaseAuth.instance.currentUser;
   String gender = '';
   String dropDownValue = 'equity';
@@ -34,25 +37,8 @@ class _RegisterFormState extends State<RegisterForm> {
   bool processing = false;
   String firstName = '';
   String lastName = '';
-  String regNum = '';
-/*  splitDocName(name) {
-    final beforeNonLeadingCapitalLetter = RegExp(r"(?=(?!^)[A-Z])");
-    List<String> splitPascalCase(String input) =>
-        input.split(beforeNonLeadingCapitalLetter);
-    setState(() {
-      documentName = splitPascalCase(name)
-          .toList()
-          .map((e) => e.replaceAll(
-        RegExp(
-          r'of|and',
-        ),
-        ' and',
-      ))
-          .join(' ')
-          .replaceFirst('and', 'of');
-    });
-    print(documentName);
-  }*/
+  String id = '';
+  String bankName = '';
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -62,54 +48,49 @@ class _RegisterFormState extends State<RegisterForm> {
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           return snapshot.hasData
               ? Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: Container(
-              // width: MediaQuery.of(context).size.width / 2.5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Select your Bank',
-                    style: _style,
-                  ),
-                  DropdownButton<dynamic>(
-                    value: dropDownValue,
-                    icon: Icon(Icons.keyboard_arrow_down),
-                    items: snapshot.data!.docs.map((element) {
-                      return DropdownMenuItem(
-                          value: element.id,
-                          child: Text(
-                              element['name']
-                              // .toString()
-                              // .split(' ')
-                              // .where((element) =>
-                              //     element.startsWith(
-                              //         RegExp(r'[A-Z][a-z]')))
-                              // .toList()
-                              // .map((e) => e.substring(0, 1))
-                              // .join(),
-                              ,
-                              style: GoogleFonts.varela(fontSize: 11)));
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        dropDownValue = newValue.toString();
-                        department.value = '';
-                        course.value = '';
-                      });
-
-                     // splitDocName(newValue);
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return DeptDialog(document: documentName);
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Select your Bank',
+                        style: _style,
+                      ),
+                      DropdownButton<dynamic>(
+                        value: dropDownValue,
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        items: snapshot.data!.docs.map((element) {
+                          return DropdownMenuItem(
+                              value: element.id,
+                              child: Text(element['name'],
+                                  style: GoogleFonts.varela(fontSize: 11)));
+                        }).toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            dropDownValue = newValue.toString();
+                            accountNumber.value = '';
                           });
-                    },
+
+                          // splitDocName(newValue);
+                          dropDownValue == 'equity'
+                              ? showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return DeptDialog(
+                                        document: dropDownValue,
+                                        id: idnumber.text,
+                                        firstName: firstname.text,
+                                        lastName: lastname.text);
+                                  })
+                              : Fluttertoast.showToast(
+                                  msg:
+                                      'this bank is not currently supported for jazia services',
+                                  toastLength: Toast.LENGTH_LONG);
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          )
+                )
               : Container();
         });
   }
@@ -140,7 +121,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Text(
@@ -158,14 +139,14 @@ class _RegisterFormState extends State<RegisterForm> {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            Container(
+                            const SizedBox(
                               height: 90,
                               width: 90,
                             ),
                             Card(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(40)),
-                              child: Container(
+                              child: SizedBox(
                                 height: 80,
                                 width: 80,
                                 child: Center(
@@ -182,7 +163,7 @@ class _RegisterFormState extends State<RegisterForm> {
                           ],
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Text(user!.email.toString(),
@@ -191,7 +172,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               fontFamily: GoogleFonts.monda().fontFamily,
                               letterSpacing: 2)),
                       Container(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         width: MediaQuery.of(context).size.width,
                         //color: Colors.blueGrey,
                         child: Column(
@@ -203,7 +184,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               children: [
                                 SizedBox(
                                   width:
-                                  MediaQuery.of(context).size.width / 2.2,
+                                      MediaQuery.of(context).size.width / 2.2,
                                   child: TextFormField(
                                     controller: firstname,
                                     validator: (val) {
@@ -214,7 +195,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                     },
                                     decoration: InputDecoration(
                                       fillColor: Theme.of(context).brightness ==
-                                          Brightness.light
+                                              Brightness.light
                                           ? Colors.blue.withOpacity(.1)
                                           : Colors.red.withOpacity(.1),
                                       filled: true,
@@ -229,7 +210,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                 ),
                                 SizedBox(
                                   width:
-                                  MediaQuery.of(context).size.width / 2.2,
+                                      MediaQuery.of(context).size.width / 2.2,
                                   child: TextFormField(
                                     controller: lastname,
                                     validator: (val) {
@@ -240,7 +221,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                     },
                                     decoration: InputDecoration(
                                       fillColor: Theme.of(context).brightness ==
-                                          Brightness.light
+                                              Brightness.light
                                           ? Colors.blue.withOpacity(.1)
                                           : Colors.red.withOpacity(.1),
                                       filled: true,
@@ -254,29 +235,29 @@ class _RegisterFormState extends State<RegisterForm> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 15),
+                            const SizedBox(height: 15),
                             TextFormField(
-                              controller: regNo,
+                              controller: idnumber,
                               validator: (val) {
                                 if (val == null || val.isEmpty) {
-                                  return 'please enter your registration number';
+                                  return 'please enter your identification number';
                                 }
                                 return null;
                               },
                               decoration: InputDecoration(
                                 fillColor: Theme.of(context).brightness ==
-                                    Brightness.light
+                                        Brightness.light
                                     ? Colors.blue.withOpacity(.1)
                                     : Colors.red.withOpacity(.1),
                                 filled: true,
-                                labelText: 'registration number',
+                                labelText: 'identification number',
                                 labelStyle: _style.copyWith(fontSize: 12),
                                 // border: OutlineInputBorder(
                                 //     borderRadius:
                                 //         BorderRadius.circular(10))
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             Divider(
@@ -284,78 +265,72 @@ class _RegisterFormState extends State<RegisterForm> {
                               endIndent: 30,
                               thickness: .5,
                               color: Theme.of(context).brightness ==
-                                  Brightness.dark
+                                      Brightness.dark
                                   ? Colors.red
                                   : Colors.blue,
                             ),
                             courses(),
                             ValueListenableBuilder(
                               builder: (context, value, widget) {
-                                return course.value.isEmpty
-                                    ? SizedBox()
+                                return accountNumber.value.isEmpty
+                                    ? const SizedBox()
                                     : Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, bottom: 8.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return DeptDialog(
-                                                document: documentName);
-                                          });
-                                    },
-                                    child: Text(
-                                      'Department: ${department.value}',
-                                      style: _style.copyWith(
-                                        decoration:
-                                        TextDecoration.underline,
-                                      ),
-                                    ),
-                                  ),
-                                );
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, bottom: 8.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return DeptDialog(
+                                                      document: documentName,
+                                                      id: idnumber.text,
+                                                      firstName: firstname.text,
+                                                      lastName: lastname.text);
+                                                });
+                                          },
+                                          child: Text(
+                                            'account number: ${accountNumber.value}',
+                                            style: _style.copyWith(
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
+                                          ),
+                                        ),
+                                      );
                               },
-                              valueListenable: department,
+                              valueListenable: accountNumber,
                             ),
-                            ValueListenableBuilder(
-                              builder: (context, value, widget) {
-                                return course.value.isEmpty
-                                    ? SizedBox()
-                                    : Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 12.0, bottom: 8.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return SelectCourse(
-                                              document: documentName,
-                                              dept: department.value,
-                                            );
-                                          });
-                                    },
-                                    child: Text(
-                                      'Course: ${course.value}',
-                                      style: _style.copyWith(
-                                        decoration:
-                                        TextDecoration.underline,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                              valueListenable: course,
-                            ),
-                            Divider(
-                              indent: 30,
-                              endIndent: 30,
-                              thickness: .5,
-                              color: Theme.of(context).brightness ==
-                                  Brightness.dark
-                                  ? Colors.red
-                                  : Colors.blue,
-                            ),
+                            // ValueListenableBuilder(
+                            //   builder: (context, value, widget) {
+                            //     return course.value.isEmpty
+                            //         ? const SizedBox()
+                            //         : Padding(
+                            //             padding: const EdgeInsets.only(
+                            //                 top: 12.0, bottom: 8.0),
+                            //             child: InkWell(
+                            //               onTap: () {},
+                            //               child: Text(
+                            //                 'Course: ${course.value}',
+                            //                 style: _style.copyWith(
+                            //                   decoration:
+                            //                       TextDecoration.underline,
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //           );
+                            //   },
+                            //   valueListenable: course,
+                            // ),
+                            // Divider(
+                            //   indent: 30,
+                            //   endIndent: 30,
+                            //   thickness: .5,
+                            //   color: Theme.of(context).brightness ==
+                            //           Brightness.dark
+                            //       ? Colors.red
+                            //       : Colors.blue,
+                            // ),
                             Padding(
                               padding: const EdgeInsets.only(
                                 top: 12,
@@ -402,7 +377,9 @@ class _RegisterFormState extends State<RegisterForm> {
                                       setState(() {
                                         gender = val.toString();
                                       });
-                                      print(gender);
+                                      if (kDebugMode) {
+                                        print(gender);
+                                      }
                                     }),
                                 Text(
                                   'other',
@@ -415,7 +392,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               endIndent: 30,
                               thickness: .5,
                               color: Theme.of(context).brightness ==
-                                  Brightness.dark
+                                      Brightness.dark
                                   ? Colors.red
                                   : Colors.blue,
                             ),
@@ -423,7 +400,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
                                 Text('Select Date of Birth', style: _style),
-                                SizedBox(
+                                const SizedBox(
                                   width: 30,
                                 ),
                                 IconButton(
@@ -444,11 +421,11 @@ class _RegisterFormState extends State<RegisterForm> {
                                         print(dateTime);
                                       }
                                     },
-                                    icon: Icon(
+                                    icon: const Icon(
                                       CupertinoIcons.calendar,
                                       size: 35,
                                     )),
-                                SizedBox(
+                                const SizedBox(
                                   width: 30,
                                 ),
                                 Text(
@@ -457,7 +434,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                 )
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Divider(
@@ -465,7 +442,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               endIndent: 30,
                               thickness: .5,
                               color: Theme.of(context).brightness ==
-                                  Brightness.dark
+                                      Brightness.dark
                                   ? Colors.red
                                   : Colors.blue,
                             ),
@@ -476,125 +453,83 @@ class _RegisterFormState extends State<RegisterForm> {
                                   borderRadius: BorderRadius.circular(25),
                                   onTap: !processing
                                       ? () {
-                                    if (!_formKey.currentState!
-                                        .validate()) {
-                                    } else if (course.value.isEmpty) {
-                                      Fluttertoast.showToast(
-                                          msg:
-                                          'please select the course you are undertaking',
-                                          //textColor: Colors.red,
-                                          toastLength: Toast.LENGTH_LONG);
-                                    } else if (gender.isEmpty) {
-                                      Fluttertoast.showToast(
-                                          msg:
-                                          'Are you male or Female?🤷‍♂️',
-                                          // textColor: Colors.red,
-                                          toastLength: Toast.LENGTH_LONG);
-                                    } else if (gender == 'other') {
-                                      Fluttertoast.showToast(
-                                        //  backgroundColor: Colors.white,
-                                          msg:
-                                          '🤦‍♀️🤦‍♀️🤦‍♀️ Gender please🤷‍♂️🤷‍♂️',
-                                          // textColor: Colors.red,
-                                          toastLength: Toast.LENGTH_LONG);
-                                    } else if ((DateTime.now().year -
-                                        dateTime.year) <
-                                        18) {
-                                      Fluttertoast.showToast(
-                                          msg:
-                                          'provide a valid date of birth',
-                                          //textColor: Colors.red,
-                                          toastLength: Toast.LENGTH_LONG);
-                                    } else {
-                                      setState(() {
-                                        validated = true;
-                                        processing = true;
-                                        firstName = firstname.text;
-                                        lastName = lastname.text;
-                                        regNum = regNo.text;
-                                      });
-                                      firestore
-                                          .collection('users')
-                                          .doc(user!.uid)
-                                          .set({
-                                        'regNo': regNum,
-                                        'firstName': firstName,
-                                        'lastName': lastName,
-                                        'school': {
-                                          'school': documentName,
-                                          'department':
-                                          department.value,
-                                          'course': course.value,
-                                        },
-                                        'gender': gender,
-                                        'authorized': false,
-                                        'DoB': dateTime,
-                                      }, SetOptions(merge: true))
-                                          .then((value) => firestore
-                                          .collection(
-                                          'authRequests')
-                                          .doc(user!.uid)
-                                          .set({
-                                        'regNo': regNum,
-                                        'firstName': firstName,
-                                        'lastName': lastName,
-                                        'school': {
-                                          'school': documentName,
-                                          'department':
-                                          department.value,
-                                          'course': course.value,
-                                        },
-                                        'gender': gender,
-                                        'DoB': dateTime,
-                                        'authorized': false,
-                                        'seen': false,
-                                      }))
-                                          .then((value) {
-                                        firstname.clear();
-                                        lastname.clear();
-                                        regNo.clear();
-                                        department.dispose();
-                                        course.dispose();
-                                        Navigator.of(context).pop();
-                                      });
-                                    }
-                                  }
+                                          if (!_formKey.currentState!
+                                              .validate()) {
+                                          } else if (gender.isEmpty) {
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    'Please select your gender',
+                                                // textColor: Colors.red,
+                                                toastLength: Toast.LENGTH_LONG);
+                                          }else if ((DateTime.now().year -
+                                                  dateTime.year) <
+                                              18) {
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    'provide a valid date of birth',
+                                                //textColor: Colors.red,
+                                                toastLength: Toast.LENGTH_LONG);
+                                          } else {
+                                            setState(() {
+                                              validated = true;
+                                              processing = true;
+                                              firstName = firstname.text;
+                                              lastName = lastname.text;
+                                              id = idnumber.text;
+                                            });
+                                            firestore.collection('users').doc().set({
+                                              'accountnumber':accountNumber.value,
+                                              'idnumber':idnumber.text,
+                                              'first_name':firstname.text,
+                                              'last_name':lastname.text,
+                                              'uid':user!.uid,
+                                              'gender':gender,
+                                              'DOB':dateTime
+
+                                            }).then((value){
+                                              Navigator.of(context).pop();
+                                              setState(() {
+                                                processing = false;
+                                              });
+                                            });
+                                          }
+                                        }
                                       : () {
-                                    Fluttertoast.showToast(
-                                        msg: 'please wait...');
-                                  },
+                                          Fluttertoast.showToast(
+                                              msg: 'please wait...');
+                                        },
                                   child: !processing
                                       ? Container(
-                                    height: 50,
-                                    width: 150,
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(25),
-                                      color:
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.red
-                                          : Colors.blue,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Continue',
-                                          style: _style.copyWith(
-                                              color: Colors.white),
-                                        ),
-                                        const Icon(
-                                          CupertinoIcons.forward,
-                                          color: Colors.white,
+                                          height: 50,
+                                          width: 150,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.dark
+                                                    ? Colors.red
+                                                    : Colors.blue,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Continue',
+                                                style: _style.copyWith(
+                                                    color: Colors.white),
+                                              ),
+                                              const Icon(
+                                                CupertinoIcons.forward,
+                                                color: Colors.white,
+                                              )
+                                            ],
+                                          ),
                                         )
-                                      ],
-                                    ),
-                                  )
                                       : const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
+                                          child: CircularProgressIndicator(),
+                                        ),
                                 ),
                               ),
                             )
@@ -612,149 +547,91 @@ class _RegisterFormState extends State<RegisterForm> {
 }
 
 class DeptDialog extends StatefulWidget {
-  const DeptDialog({Key? key, required this.document}) : super(key: key);
+  const DeptDialog(
+      {Key? key,
+      required this.document,
+      required this.id,
+      required this.firstName,
+      required this.lastName})
+      : super(key: key);
   final String document;
+  final String id;
+  final String firstName;
+  final String lastName;
   @override
   _DeptDialogState createState() => _DeptDialogState();
 }
 
 class _DeptDialogState extends State<DeptDialog> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  TextEditingController accNoController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Text(widget.document),
-      content: StreamBuilder<DocumentSnapshot>(
-          stream:
-          firestore.collection('schools').doc(widget.document).snapshots(),
-          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            Map data =
-            snapshot.hasData ? snapshot.data!.data() as Map : Map.from({});
-            return snapshot.hasData
-                ? Column(
-              children: data.keys
-                  .map((dpt) => Material(
-                  color: Colors.transparent,
-                  child: Padding(
-                    padding:
-                    const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                    child: Card(
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      child: InkWell(
-                          borderRadius: BorderRadius.circular(15),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return SelectCourse(
-                                      dept: dpt,
-                                      document: widget.document);
-                                });
-                          },
-                          child: ListTile(
-                              title: Text(
-                                dpt,
-                                style: _style.copyWith(fontSize: 12),
-                              ))),
-                    ),
-                  )))
-                  .toList(),
-            )
-                : Container();
-          }),
-    );
-  }
-}
+    return Form(
+      key: _formKey,
+      child: CupertinoAlertDialog(
+        title: Text(widget.document == 'equity' ? 'Equity Bank' : ''),
+        content: StreamBuilder<DocumentSnapshot>(
+            stream:
+                firestore.collection('banks').doc(widget.document).snapshots(),
+            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+              return snapshot.hasData
+                  ? Material(
+                      color: Colors.transparent,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              'please provide your account number below for authorization'),
+                              Divider(),
+                              Text('first name: ${widget.firstName.isEmpty?'not provided':widget.firstName }'),
+                              Divider(),
+                              Text('last name: ${widget.lastName.isEmpty?'not provided':widget.lastName }'),
+                              Divider(),
+                              Text('identification number: ${widget.id.isEmpty?'not provided':widget.id }'),
+                              Divider(),
 
-class SelectCourse extends StatefulWidget {
-  const SelectCourse({Key? key, required this.dept, required this.document})
-      : super(key: key);
-  final String dept;
-  final String document;
-  @override
-  _SelectCourseState createState() => _SelectCourseState();
-}
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: TextFormField(
+                              controller: accNoController,
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return 'account number is required';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                fillColor: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Colors.blue.withOpacity(.1)
+                                    : Colors.red.withOpacity(.1),
+                                filled: true,
+                                labelText: 'account number',
+                                labelStyle: _style.copyWith(fontSize: 12),
 
-class _SelectCourseState extends State<SelectCourse> {
-  String dept1 = '';
-  @override
-  void initState() {
-    dept1 = widget.dept;
-    super.initState();
-  }
-FirebaseFirestore firestore = FirebaseFirestore.instance;
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Material(
-        color: Colors.transparent,
-        child: Row(children: [
-          InkWell(
-            onTap: () {
-              Navigator.of(context).pop();
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return DeptDialog(document: widget.document);
-                  });
-            },
-            child: Icon(
-              CupertinoIcons.chevron_back,
-              // size: 18,
-            ),
-          ),
-          SizedBox(
-            width: 15,
-          ),
-          Flexible(
-            child: Text(
-              widget.dept,
-              style: _style.copyWith(fontSize: 12),
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-        ]),
-      ),
-      content: StreamBuilder<DocumentSnapshot>(
-          stream:
-          firestore.collection('schools').doc(widget.document).snapshots(),
-          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            Map data =
-            snapshot.hasData ? snapshot.data!.data() as Map : Map.from({});
-            List courses = data[widget.dept] ?? [];
-            return snapshot.hasData
-                ? Column(
-              children: courses
-                  .map((crs) => Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                child: ValueListenableBuilder(
-                  builder: (context, value, widget) {
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(15),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        setState(() {
-                          course.value = crs;
-                          department.value = dept1;
-                        });
-                      },
-                      child: ListTile(
-                        title: Text(crs,
-                            style: _style.copyWith(fontSize: 12)),
+                                // border: OutlineInputBorder(
+                                //     borderRadius:
+                                //         BorderRadius.circular(10))
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                  valueListenable: course,
-                ),
-              ))
-                  .toList(),
-            )
-                : Container();
-          }),
+                    )
+                  : Container();
+            }),
+        actions: [
+          TextButton(onPressed: () {
+            Navigator.of(context).pop();
+          }, child: Text('cancel')),
+          TextButton(onPressed: () {
+            accountNumber = ValueNotifier(accNoController.text);
+             Navigator.of(context).pop();
+          }, child: Text('OK'))
+        ],
+      ),
     );
   }
 }

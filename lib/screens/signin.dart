@@ -81,12 +81,13 @@ class _SignInScreenState extends State<SignInScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        
                         Icon(CupertinoIcons.arrow_down_doc),
                         SizedBox(
                           width: 5,
                         ),
                         Text('JAZIA',
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.modak(
                                 color: Colors.blueGrey,
                                 fontSize: 35,
                                 letterSpacing: 2))

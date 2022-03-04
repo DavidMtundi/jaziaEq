@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:jazia/funcs/detailFunc.dart';
 import 'package:jazia/funcs/imagefunc.dart';
@@ -25,7 +27,7 @@ class BodyWidget extends StatelessWidget {
 
 
 
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height/4,
       width: MediaQuery.of(context).size.width,
      /* decoration:  BoxDecoration(
@@ -141,10 +143,7 @@ class BodyWidget extends StatelessWidget {
                       Expanded(
                         flex: 1,
                         child: GestureDetector(
-                          child: Container(
-                            //color: Colors.purple,
-                            child:  Text('Price: KSH $wig_price'),
-                          ),
+                          child: Text('Price: KSH $wig_price'),
                           onTap: ()=> showDialog(context: context, barrierDismissible: true, builder: (context)=> GetPrice(wig_price: wig_price!,)),
                         ),
                       ),
@@ -155,10 +154,7 @@ class BodyWidget extends StatelessWidget {
                       Expanded(
                         flex: 4,
                         child: GestureDetector(
-                          child: Container(
-                            //color: Colors.redAccent,
-                            child:  Text('$wig_des'),
-                            ),
+                          child: Text('$wig_des'),
                           onTap: ()=> showDialog(context: context, barrierDismissible: true, builder: (context)=> GetDetail(wig_detail:wig_des!,wig_name: wig_name!,)),
 
                         ),
