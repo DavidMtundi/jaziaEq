@@ -5,15 +5,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeago/timeago.dart';
 
 class ChatPage extends StatefulWidget {
+
   final String appbar_name, uid;
-    ChatPage({Key? key, required this.appbar_name, required this.uid}) : super(key: key);
+
+  ChatPage({Key? key, required this.appbar_name, required this.uid})
+      : super(key: key);
+
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final double _inputHeight = 50;
@@ -21,84 +24,95 @@ class _ChatPageState extends State<ChatPage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  /*var firstTime = firestore
+      .collection('users').doc(widget.uid).collection('responses').where(field).get();*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.appbar_name+"'s Request"),
+        title: Text(widget.appbar_name + "'s Request"),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-         StreamBuilder<DocumentSnapshot>(
-             stream: firestore.collection('userSell').doc(_auth.currentUser!.uid).collection('messages').doc(widget.uid).snapshots(),
-             builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+          StreamBuilder<DocumentSnapshot>(
+              stream: firestore
+                  .collection('userSell')
+                  .doc(_auth.currentUser!.uid)
+                  .collection('messages')
+                  .doc(widget.uid)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('Sorry, Check your connection!'),
+                  );
+                }
 
-               if(snapshot.hasError){
-                 return const Center(
-                   child: Text('Sorry, Check your connection!'),
-                 );
-               }
-
-               if(snapshot.connectionState == ConnectionState.waiting){
-                 return const CircularProgressIndicator();
-               }
-               List messages = snapshot.data!['messages'];
-               return SingleChildScrollView(
-                 child: Column(
-                   children:
-                   messages.map((message) {
-                     return Container(
-                       child: message['type'] == 'm'
-                           ?
-                       Align(
-                         alignment: Alignment.centerLeft,
-                         child: Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child: Container(
-                             decoration: BoxDecoration(
-                                 color: Colors.grey,
-                                 borderRadius: BorderRadius.circular(20)),
-                             width: MediaQuery.of(context).size.width * .7,
-                             child: Center(
-                               child: Padding(
-                                 padding: const EdgeInsets.all(9.0),
-                                 child: Text(
-                                   message['message'],
-                                   style: GoogleFonts.heebo(fontSize: 12),
-                                 ),
-                               ),
-                             ),
-                           ),
-                         ),
-                       )
-                           :
-                       Align(
-                         alignment: Alignment.centerRight,
-                         child: Padding(
-                           padding: const EdgeInsets.all(10.0),
-                           child: Container(
-                             decoration: BoxDecoration(
-                                 color: Colors.red[800],
-                                 borderRadius: BorderRadius.circular(20)),
-                             width: MediaQuery.of(context).size.width * .7,
-                             child: Center(
-                               child: Padding(
-                                 padding: const EdgeInsets.all(9.0),
-                                 child: Text(
-                                   message['message'],
-                                   style: GoogleFonts.heebo(fontSize: 12),
-                                 ),
-                               ),
-                             ),
-                           ),
-                         ),
-                       ),
-                     );
-                   }).toList(),
-                 ),
-               );
-             }),
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+                List messages = snapshot.data!['messages'];
+                return SingleChildScrollView(
+                  child: Column(
+                    children: messages.map((message) {
+                      return Container(
+                        child: message['type'] == 'm'
+                            ? Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    width:
+                                        MediaQuery.of(context).size.width * .7,
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(9.0),
+                                        child: Text(
+                                          message['message'],
+                                          style:
+                                              GoogleFonts.heebo(fontSize: 12),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.red[800],
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    width:
+                                        MediaQuery.of(context).size.width * .7,
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(9.0),
+                                        child: Text(
+                                          message['message'],
+                                          style:
+                                              GoogleFonts.heebo(fontSize: 12),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      );
+                    }).toList(),
+                  ),
+                );
+              }),
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Column(
@@ -134,31 +148,45 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     IconButton(
                         splashRadius: 24,
-                        onPressed: () async{
+                        onPressed: () async {
                           _controller.text.isEmpty
-                              ?
-                          print('empty')
-                              :
-                          await firestore
-                              .collection('userSell')
-                              .doc(_auth.currentUser!.uid)
-                              .collection('messages')
-                              .doc(widget.uid)
-                              .set({
-                            'messages':FieldValue.arrayUnion([
-                              {
-                                'message':_controller.text,
-                                'name':_auth.currentUser!.displayName,
-                                'type':'r',
-                                'time':DateTime.now(),
-                                'image':['https://testme','https://testme1',]
-                              },
-                            ])
-                          },SetOptions(merge: true)).then((value) {
-                            setState(() {
-                              _controller.clear();
-                            });
-                          });
+                              ? print('empty')
+                              : await firestore
+                                  .collection('userSell')
+                                  .doc(_auth.currentUser!.uid)
+                                  .collection('messages')
+                                  .doc(widget.uid)
+                                  .set({
+                                  'messages': FieldValue.arrayUnion([
+                                    {
+                                      'message': _controller.text,
+                                      'name': _auth.currentUser!.displayName,
+                                      'type': 'r',
+                                      'time': DateTime.now(),
+                                      'image': [
+                                        'https://testme',
+                                        'https://testme1',
+                                      ]
+                                    },
+                                  ])
+                                }, SetOptions(merge: true)).then((value) {
+                                  firestore
+                                      .collection('users')
+                                      .doc(widget.uid)
+                                      .collection('responses')
+                                      .doc()
+                                      .set({
+                                    'message':_controller.text,
+                                    'name':_auth.currentUser!.displayName,
+                                    'time':DateTime.now(),
+                                    'resUid':_auth.currentUser!.uid,
+                                    'resUrl':_auth.currentUser!.photoURL,
+                                    'type':'r'
+                                  });
+                                  setState(() {
+                                    _controller.clear();
+                                  });
+                                });
                         },
                         icon: Icon(Icons.send))
                   ],

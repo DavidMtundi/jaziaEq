@@ -28,7 +28,7 @@ class Items extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: Container(
-            width: size.width / 2.5,
+            width: size.width / 6,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

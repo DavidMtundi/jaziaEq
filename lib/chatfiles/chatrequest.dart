@@ -24,11 +24,11 @@ class _ChatReqState extends State<ChatReq> {
           .collection('userSell')
           .doc(_auth.currentUser!.uid)
           .collection('messages')
-          .doc(data['User'])
+          .doc(data['user'])
           .set({
         'messages': FieldValue.arrayUnion([
           {
-            'message': data['Message'],
+            'message': data['message'],
             'name': _auth.currentUser!.displayName,
             'type': 'm',
             'time': DateTime.now(),
@@ -42,7 +42,7 @@ class _ChatReqState extends State<ChatReq> {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      ChatPage(appbar_name: data['Name'], uid: data['User']))));
+                      ChatPage(appbar_name: data['name'], uid: data['user']))));
     }
 
     return Scaffold(
@@ -77,7 +77,7 @@ class _ChatReqState extends State<ChatReq> {
                             .collection('userSell')
                             .doc(_auth.currentUser!.uid)
                             .collection('messages')
-                            .doc(data['User'])
+                            .doc(data['user'])
                             .get()
                             .then((value) {
                           /*   value.data()==null?  :print(value.data());*/
@@ -87,7 +87,7 @@ class _ChatReqState extends State<ChatReq> {
 
                             bool exists = false;
                             for (var element in messages) {
-                              if (element['message'] == data['Message']) {
+                              if (element['message'] == data['message']) {
                                 exists = true;
                               }
                             }
@@ -97,8 +97,8 @@ class _ChatReqState extends State<ChatReq> {
                                 ? setMessage((data))
                                 : Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => ChatPage(
-                                        appbar_name: data['Name'],
-                                        uid: data['User'])));
+                                        appbar_name: data['name'],
+                                        uid: data['user'])));
                           } catch (e) {
                             setMessage(data);
                             print(e.toString());
@@ -133,7 +133,7 @@ class _ChatReqState extends State<ChatReq> {
                           leading: CircleAvatar(
                             child: ClipOval(
                               child: CachedNetworkImage(
-                                imageUrl: data["UserUrl"],
+                                imageUrl: data["userUrl"],
                                 imageBuilder: (context, imageProvider) =>
                                     Container(
                                   decoration: BoxDecoration(
@@ -156,16 +156,16 @@ class _ChatReqState extends State<ChatReq> {
                             ),
                           ),
                           title: Text(
-                            data["Name"],
+                            data["name"],
                             style: GoogleFonts.ruda(),
                           ),
                           subtitle: Text(
-                            data["Message"].toString(),
+                            data["message"].toString(),
                             style: GoogleFonts.mitr(),
                             overflow: TextOverflow.ellipsis,
                           ),
                           trailing: Text(
-                            timeago.format(data['Time'].toDate()),
+                            timeago.format(data['time'].toDate()),
                             style: GoogleFonts.sawarabiMincho(
                                 textStyle:
                                     const TextStyle(color: Colors.greenAccent)),

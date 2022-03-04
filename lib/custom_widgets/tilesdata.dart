@@ -3,28 +3,28 @@ import 'package:flutter/material.dart';
 class BottomSheetData {
   var bottomSheetTiles = [
     {
-      'title': 'report missing documents',
+      'title': 'Link Jazia to an Equity account',
       'hasSub': true,
-      'sub': 'e.g. missing ID, passport, ... etc.',
+      'sub': 'Get funded to complete your purchases',
       'image': 'assets/id.png',
       'color': Colors.greenAccent
     },
     {
-      'title': 'file a complaint against a student',
+      'title': 'Create a personal Equity account',
       'hasSub': true,
-      'sub': 'e.g. bully, rogue behavior, ... etc.',
+      'sub': 'Take 1 minute setup an Equity account and link to Jazia',
       'image': 'assets/bully.png',
       'color': Colors.pink
     },
     {
-      'title': 'check out lost and found items',
+      'title': 'Sell an item',
       'hasSub': false,
       'sub': '',
       'image': 'assets/lostnfound.png',
       'color': Colors.blue
     },
     {
-      'title': 'contact the office of the dean',
+      'title': 'Settings',
       'hasSub': false,
       'sub': '',
       'image': 'assets/contact.png',

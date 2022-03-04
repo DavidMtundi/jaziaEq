@@ -221,11 +221,11 @@ class _LandOrderState extends State<LandOrder> {
                     child:
                         ElevatedButton(onPressed: () {
                           firestore.collection('business').doc('electronics').collection('requests').doc().set({
-                            'User':_auth.currentUser!.uid,
-                            'Name':_auth.currentUser!.displayName,
-                            'UserUrl':_auth.currentUser!.photoURL,
-                            'Message': _controller.text,
-                            'Time': DateTime.now()
+                            'user':_auth.currentUser!.uid,
+                            'name':_auth.currentUser!.displayName,
+                            'userUrl':_auth.currentUser!.photoURL,
+                            'message': _controller.text,
+                            'time': DateTime.now()
                           });
                           //print(_controller.text);
                         }, child: Text('Submit')),

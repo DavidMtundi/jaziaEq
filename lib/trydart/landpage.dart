@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jazia/chatfiles/chatresponse.dart';
 import 'package:jazia/custom_widgets/imagewidget.dart';
 import 'package:jazia/trydart/gridcategory.dart';
 import 'package:jazia/trydart/landorder.dart';
@@ -11,6 +12,7 @@ import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../custom_widgets/items.dart';
+import '../custom_widgets/tilesdata.dart';
 
 var date = ValueNotifier<DateTime>(DateTime.now());
 
@@ -79,15 +81,32 @@ class _LandExistingState extends State<LandExisting>
           },
         ),*/
         child: SolidBottomSheet(
+          smoothness: Smoothness.high,
+          draggableBody: true,
           headerBar: Container(
               color: Colors.transparent, height: 58, child: bottomBarRow()),
           body: Material(
-            child: Container(
-              height: 100,
-              width: double.infinity,
-              color: Colors.red,
-            ),
-          ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ListView.separated(
+                  itemBuilder: (BuildContext context, int index) {
+                    var data =
+                    BottomSheetData().bottomSheetTiles[index];
+                    return BottomBarTiles(
+                      color: data['color'],
+                      title: data['title'],
+                      index: index,
+                      image: data['image'],
+                      subtitle: data['sub'],
+                      hasSubtitle: data['hasSub'],
+                    );
+                  },
+                  itemCount: BottomSheetData().bottomSheetTiles.length,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider();
+                  },
+                ),
+              )),
         ),
       );
     } else {
@@ -104,7 +123,7 @@ class _LandExistingState extends State<LandExisting>
       padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Items(
               size: size,
@@ -139,6 +158,23 @@ class _LandExistingState extends State<LandExisting>
                   : Theme.of(context).brightness == Brightness.light
                       ? Colors.black
                       : Colors.white),
+          Items(
+              size: size,
+              icon: Icons.home,
+              onTap: () {
+                _animationController.reset();
+                _pageController.animateToPage(2,
+                    duration: Duration(milliseconds: 200),
+                    curve: Curves.easeInCubic);
+              },
+              label: 'Chat',
+              color: index == 2
+                  ? Theme.of(context).brightness == Brightness.light
+                  ? Colors.teal
+                  : Colors.red
+                  : Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white),
         ],
       ),
     );
@@ -379,23 +415,24 @@ class _LandExistingState extends State<LandExisting>
               ]))
             ],
           ),
-          LandOrder()
+          LandOrder(),
+          ChatResponse(),
         ],
       ),
       bottomSheet: _showBottomSheet(),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        if(_show == false){
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+        if(_show){
+          setState(() {
+            _show = false;
+          });
+        } else{
           setState(() {
             _show = true;
           });
         }
-        if(_show == true){
-          setState(() {
-            _show = false;
-          });
-        }
-
-      }),
+      },
+      child: _show?Icon(Icons.arrow_downward):Icon(Icons.arrow_upward),),
     );
   }
 }
