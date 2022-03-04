@@ -125,13 +125,13 @@ class _LandExistingState extends State<LandExisting>
                       : Colors.white),
           Items(
               size: size,
-              icon: Icons.settings,
+              icon: Icons.add_shopping_cart,
               onTap: () {
                 _pageController.animateToPage(1,
                     duration: Duration(milliseconds: 200),
                     curve: Curves.easeInCubic);
               },
-              label: 'Settings',
+              label: 'Order',
               color: index == 1
                   ? Theme.of(context).brightness == Brightness.light
                       ? Colors.teal
@@ -182,7 +182,8 @@ class _LandExistingState extends State<LandExisting>
                         text: 'Jazia',
                         style: GoogleFonts.orbitron(
                           textStyle: const TextStyle(
-                              color: Colors.red, letterSpacing: .5),
+                             // color: Colors.red,
+                              letterSpacing: .5),
                           fontSize: 23,
                           fontWeight: FontWeight.w200,
                         ),
@@ -230,7 +231,7 @@ class _LandExistingState extends State<LandExisting>
                         //width: double.infinity,
                         width: MediaQuery.of(context).size.width / 1.4,
                         height: 40,
-                        color: Colors.white,
+                        //color: Colors.white,
                         child: const Center(
                           child: TextField(
                             decoration: InputDecoration(
@@ -304,12 +305,12 @@ class _LandExistingState extends State<LandExisting>
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasError) {
-                          return const Text('Something went wrong');
+                          return const Center(child: Text('Sorry, Check your connection!'),);
                         }
 
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Text("Loading");
+                          return const CircularProgressIndicator();
                         }
 
                         return Column(
@@ -383,9 +384,17 @@ class _LandExistingState extends State<LandExisting>
       ),
       bottomSheet: _showBottomSheet(),
       floatingActionButton: FloatingActionButton(onPressed: () {
-        setState(() {
-          _show = true;
-        });
+        if(_show == false){
+          setState(() {
+            _show = true;
+          });
+        }
+        if(_show == true){
+          setState(() {
+            _show = false;
+          });
+        }
+
       }),
     );
   }

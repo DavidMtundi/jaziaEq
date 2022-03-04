@@ -6,23 +6,22 @@ import 'package:jazia/screens/signin.dart';
 import 'package:jazia/trydart/landpage.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  handleAuth() {
-    return StreamBuilder(
-        stream: _auth.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return const LandExisting();
-          } else {
-            return const SignInScreen();
-          }
-        });
-  }
-
-  signOut() {
-    _auth.signOut();
-  }
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
+handleAuth(){
+  return StreamBuilder(
+    stream: _auth.authStateChanges(),
+      builder: (context, snapshot){
+      if(snapshot.hasData){
+        return LandExisting();
+      } else {
+        return SignInScreen();
+      }
+      }
+  );
+}
+signOut(){
+  _auth.signOut();
+}
   Future<UserCredential> signInWithGoogle() async {
    late UserCredential authenticate;
     try {
@@ -30,8 +29,7 @@ class AuthService {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(

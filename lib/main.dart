@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:jazia/auth/auth.dart';
+import 'package:jazia/mt940/Screens/mt940screen.dart';
+import 'package:jazia/chatfiles/chatpage.dart';
+import 'package:jazia/chatfiles/chatrequest.dart';
 import 'package:jazia/services/app_theme.dart';
 import 'package:jazia/services/constants.dart';
 import 'package:jazia/services/theme_notifier.dart';
@@ -93,6 +96,8 @@ class _MyAppState extends State<MyApp> {
         initialRoute: '/',
         routes: {
           '/landorder': (context) => const LandOrder(),
+          '/chatrequests': (context) => const ChatReq(),
+          '/mt940download': (context) => Mt940Screen()
         },
         //home: const PostSale(),
         home: AuthService().handleAuth() //const LandExisting(),
