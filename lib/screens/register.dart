@@ -453,7 +453,6 @@ class _RegisterFormState extends State<RegisterForm> {
                                   borderRadius: BorderRadius.circular(25),
                                   onTap: !processing
                                       ? () {
-<<<<<<< HEAD
                                           if (!_formKey.currentState!
                                               .validate()) {
                                           } else if (gender.isEmpty) {
@@ -495,91 +494,6 @@ class _RegisterFormState extends State<RegisterForm> {
                                             });
                                           }
                                         }
-=======
-                                    if (!_formKey.currentState!
-                                        .validate()) {
-                                    } else if (course.value.isEmpty) {
-                                      Fluttertoast.showToast(
-                                          msg:
-                                          'please select the course you are undertaking',
-                                          //textColor: Colors.red,
-                                          toastLength: Toast.LENGTH_LONG);
-                                    } else if (gender.isEmpty) {
-                                      Fluttertoast.showToast(
-                                          msg:
-                                          'Are you male or Female?🤷‍♂️',
-                                          // textColor: Colors.red,
-                                          toastLength: Toast.LENGTH_LONG);
-                                    } else if (gender == 'other') {
-                                      Fluttertoast.showToast(
-                                        //  backgroundColor: Colors.white,
-                                          msg:
-                                          '🤦‍♀️🤦‍♀️🤦‍♀️ Gender please🤷‍♂️🤷‍♂️',
-                                          // textColor: Colors.red,
-                                          toastLength: Toast.LENGTH_LONG);
-                                    } else if ((DateTime.now().year -
-                                        dateTime.year) <
-                                        18) {
-                                      Fluttertoast.showToast(
-                                          msg:
-                                          'provide a valid date of birth',
-                                          //textColor: Colors.red,
-                                          toastLength: Toast.LENGTH_LONG);
-                                    } else {
-                                      setState(() {
-                                        validated = true;
-                                        processing = true;
-                                        firstName = firstname.text;
-                                        lastName = lastname.text;
-                                        regNum = regNo.text;
-                                      });
-                                     /* firestore
-                                          .collection('users')
-                                          .doc(user!.uid)
-                                          .set({
-                                        'regNo': regNum,
-                                        'firstName': firstName,
-                                        'lastName': lastName,
-                                        'school': {
-                                          'school': documentName,
-                                          'department':
-                                          department.value,
-                                          'course': course.value,
-                                        },
-                                        'gender': gender,
-                                        'authorized': false,
-                                        'DoB': dateTime,
-                                      }, SetOptions(merge: true))
-                                          .then((value) => firestore
-                                          .collection(
-                                          'authRequests')
-                                          .doc(user!.uid)
-                                          .set({
-                                        'regNo': regNum,
-                                        'firstName': firstName,
-                                        'lastName': lastName,
-                                        'school': {
-                                          'school': documentName,
-                                          'department':
-                                          department.value,
-                                          'course': course.value,
-                                        },
-                                        'gender': gender,
-                                        'DoB': dateTime,
-                                        'authorized': false,
-                                        'seen': false,
-                                      }))
-                                          .then((value) {
-                                        firstname.clear();
-                                        lastname.clear();
-                                        regNo.clear();
-                                        department.dispose();
-                                        course.dispose();
-                                        Navigator.of(context).pop();
-                                      });*/
-                                    }
-                                  }
->>>>>>> d91cc9fddb21bf305c360b4e8a8a2f8e26f6cc9c
                                       : () {
                                           Fluttertoast.showToast(
                                               msg: 'please wait...');
@@ -697,7 +611,6 @@ class _DeptDialogState extends State<DeptDialog> {
                                 labelText: 'account number',
                                 labelStyle: _style.copyWith(fontSize: 12),
 
-<<<<<<< HEAD
                                 // border: OutlineInputBorder(
                                 //     borderRadius:
                                 //         BorderRadius.circular(10))
@@ -705,75 +618,6 @@ class _DeptDialogState extends State<DeptDialog> {
                             ),
                           ),
                         ],
-=======
-class _SelectCourseState extends State<SelectCourse> {
-  String dept1 = '';
-  @override
-  void initState() {
-    dept1 = widget.dept;
-    super.initState();
-  }
-FirebaseFirestore firestore = FirebaseFirestore.instance;
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Material(
-        color: Colors.transparent,
-        child: Row(children: [
-          InkWell(
-            onTap: () {
-              Navigator.of(context).pop();
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return DeptDialog(document: widget.document);
-                  });
-            },
-            child: const Icon(
-              CupertinoIcons.chevron_back,
-              // size: 18,
-            ),
-          ),
-          const SizedBox(
-            width: 15,
-          ),
-          Flexible(
-            child: Text(
-              widget.dept,
-              style: _style.copyWith(fontSize: 12),
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-        ]),
-      ),
-      content: StreamBuilder<DocumentSnapshot>(
-          stream:
-          firestore.collection('schools').doc(widget.document).snapshots(),
-          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            Map data =
-            snapshot.hasData ? snapshot.data!.data() as Map : Map.from({});
-            List courses = data[widget.dept] ?? [];
-            return snapshot.hasData
-                ? Column(
-              children: courses
-                  .map((crs) => Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                child: ValueListenableBuilder(
-                  builder: (context, value, widget) {
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(15),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        setState(() {
-                          course.value = crs;
-                          department.value = dept1;
-                        });
-                      },
-                      child: ListTile(
-                        title: Text(crs,
-                            style: _style.copyWith(fontSize: 12)),
->>>>>>> d91cc9fddb21bf305c360b4e8a8a2f8e26f6cc9c
                       ),
                     )
                   : Container();
