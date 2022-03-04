@@ -16,14 +16,14 @@ TextStyle _style = GoogleFonts.varelaRound();
 var accountNumber = ValueNotifier<String>('');
 
 
-class RegisterForm extends StatefulWidget {
-  const RegisterForm({Key? key}) : super(key: key);
+class VerifySeller extends StatefulWidget {
+  const VerifySeller({Key? key}) : super(key: key);
 
   @override
-  _RegisterFormState createState() => _RegisterFormState();
+  _VerifySellerState createState() => _VerifySellerState();
 }
 
-class _RegisterFormState extends State<RegisterForm> {
+class _VerifySellerState extends State<VerifySeller> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController firstname = TextEditingController();
   TextEditingController lastname = TextEditingController();
@@ -48,49 +48,49 @@ class _RegisterFormState extends State<RegisterForm> {
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           return snapshot.hasData
               ? Padding(
-                  padding: const EdgeInsets.only(top: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Select your Bank',
-                        style: _style,
-                      ),
-                      DropdownButton<dynamic>(
-                        value: dropDownValue,
-                        icon: const Icon(Icons.keyboard_arrow_down),
-                        items: snapshot.data!.docs.map((element) {
-                          return DropdownMenuItem(
-                              value: element.id,
-                              child: Text(element['name'],
-                                  style: GoogleFonts.varela(fontSize: 11)));
-                        }).toList(),
-                        onChanged: (newValue) {
-                          setState(() {
-                            dropDownValue = newValue.toString();
-                            accountNumber.value = '';
-                          });
+            padding: const EdgeInsets.only(top: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Select your Bank',
+                  style: _style,
+                ),
+                DropdownButton<dynamic>(
+                  value: dropDownValue,
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  items: snapshot.data!.docs.map((element) {
+                    return DropdownMenuItem(
+                        value: element.id,
+                        child: Text(element['name'],
+                            style: GoogleFonts.varela(fontSize: 11)));
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      dropDownValue = newValue.toString();
+                      accountNumber.value = '';
+                    });
 
-                          // splitDocName(newValue);
-                          dropDownValue == 'equity'
-                              ? showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return DeptDialog(
-                                        document: dropDownValue,
-                                        id: idnumber.text,
-                                        firstName: firstname.text,
-                                        lastName: lastname.text);
-                                  })
-                              : Fluttertoast.showToast(
-                                  msg:
-                                      'this bank is not currently supported for jazia services',
-                                  toastLength: Toast.LENGTH_LONG);
-                        },
-                      ),
-                    ],
-                  ),
-                )
+                    // splitDocName(newValue);
+                    dropDownValue == 'equity'
+                        ? showDialog(
+                        context: context,
+                        builder: (context) {
+                          return DeptDialog(
+                              document: dropDownValue,
+                              id: idnumber.text,
+                              firstName: firstname.text,
+                              lastName: lastname.text);
+                        })
+                        : Fluttertoast.showToast(
+                        msg:
+                        'this bank is not currently supported for jazia services',
+                        toastLength: Toast.LENGTH_LONG);
+                  },
+                ),
+              ],
+            ),
+          )
               : Container();
         });
   }
@@ -125,7 +125,7 @@ class _RegisterFormState extends State<RegisterForm> {
                         height: 10,
                       ),
                       Text(
-                        'Let\'s finish setting you up...',
+                        'Let\'s set you up as a seller...',
                         style: _style.copyWith(
                             fontWeight: FontWeight.bold, fontSize: 15),
                       ),
@@ -179,62 +179,6 @@ class _RegisterFormState extends State<RegisterForm> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.2,
-                                  child: TextFormField(
-                                    controller: firstname,
-                                    validator: (val) {
-                                      if (val == null || val.isEmpty) {
-                                        return 'first name is required';
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
-                                      fillColor: Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.blue.withOpacity(.1)
-                                          : Colors.red.withOpacity(.1),
-                                      filled: true,
-                                      labelText: 'first name',
-                                      labelStyle: _style.copyWith(fontSize: 12),
-
-                                      // border: OutlineInputBorder(
-                                      //     borderRadius:
-                                      //         BorderRadius.circular(10))
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.2,
-                                  child: TextFormField(
-                                    controller: lastname,
-                                    validator: (val) {
-                                      if (val == null || val.isEmpty) {
-                                        return 'last name is required';
-                                      }
-                                      return null;
-                                    },
-                                    decoration: InputDecoration(
-                                      fillColor: Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.blue.withOpacity(.1)
-                                          : Colors.red.withOpacity(.1),
-                                      filled: true,
-                                      labelText: 'last name',
-                                      labelStyle: _style.copyWith(fontSize: 12),
-                                      // border: OutlineInputBorder(
-                                      //     borderRadius:
-                                      //         BorderRadius.circular(10))
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                             const SizedBox(height: 15),
                             TextFormField(
                               controller: idnumber,
@@ -246,7 +190,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               },
                               decoration: InputDecoration(
                                 fillColor: Theme.of(context).brightness ==
-                                        Brightness.light
+                                    Brightness.light
                                     ? Colors.blue.withOpacity(.1)
                                     : Colors.red.withOpacity(.1),
                                 filled: true,
@@ -287,39 +231,39 @@ class _RegisterFormState extends State<RegisterForm> {
                               endIndent: 30,
                               thickness: .5,
                               color: Theme.of(context).brightness ==
-                                      Brightness.dark
+                                  Brightness.dark
                                   ? Colors.red
                                   : Colors.blue,
                             ),
-                            courses(),
+                            //courses(),
                             ValueListenableBuilder(
                               builder: (context, value, widget) {
                                 return accountNumber.value.isEmpty
                                     ? const SizedBox()
                                     : Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 8.0, bottom: 8.0),
-                                        child: InkWell(
-                                          onTap: () {
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return DeptDialog(
-                                                      document: documentName,
-                                                      id: idnumber.text,
-                                                      firstName: firstname.text,
-                                                      lastName: lastname.text);
-                                                });
-                                          },
-                                          child: Text(
-                                            'account number: ${accountNumber.value}',
-                                            style: _style.copyWith(
-                                              decoration:
-                                                  TextDecoration.underline,
-                                            ),
-                                          ),
-                                        ),
-                                      );
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return DeptDialog(
+                                                document: documentName,
+                                                id: idnumber.text,
+                                                firstName: firstname.text,
+                                                lastName: lastname.text);
+                                          });
+                                    },
+                                    child: Text(
+                                      'account number: ${accountNumber.value}',
+                                      style: _style.copyWith(
+                                        decoration:
+                                        TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ),
+                                );
                               },
                               valueListenable: accountNumber,
                             ),
@@ -414,7 +358,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               endIndent: 30,
                               thickness: .5,
                               color: Theme.of(context).brightness ==
-                                      Brightness.dark
+                                  Brightness.dark
                                   ? Colors.red
                                   : Colors.blue,
                             ),
@@ -464,7 +408,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               endIndent: 30,
                               thickness: .5,
                               color: Theme.of(context).brightness ==
-                                      Brightness.dark
+                                  Brightness.dark
                                   ? Colors.red
                                   : Colors.blue,
                             ),
@@ -475,83 +419,83 @@ class _RegisterFormState extends State<RegisterForm> {
                                   borderRadius: BorderRadius.circular(25),
                                   onTap: !processing
                                       ? () {
-                                          if (!_formKey.currentState!
-                                              .validate()) {
-                                          } else if (gender.isEmpty) {
-                                            Fluttertoast.showToast(
-                                                msg:
-                                                    'Please select your gender',
-                                                // textColor: Colors.red,
-                                                toastLength: Toast.LENGTH_LONG);
-                                          }else if ((DateTime.now().year -
-                                                  dateTime.year) <
-                                              18) {
-                                            Fluttertoast.showToast(
-                                                msg:
-                                                    'provide a valid date of birth',
-                                                //textColor: Colors.red,
-                                                toastLength: Toast.LENGTH_LONG);
-                                          } else {
-                                            setState(() {
-                                              validated = true;
-                                              processing = true;
-                                              firstName = firstname.text;
-                                              lastName = lastname.text;
-                                              id = idnumber.text;
-                                            });
-                                            firestore.collection('users').doc().set({
-                                              'accountnumber':accountNumber.value,
-                                              'idnumber':idnumber.text,
-                                              'first_name':firstname.text,
-                                              'last_name':lastname.text,
-                                              'uid':user!.uid,
-                                              'gender':gender,
-                                              'DOB':dateTime
+                                    if (!_formKey.currentState!
+                                        .validate()) {
+                                    } else if (gender.isEmpty) {
+                                      Fluttertoast.showToast(
+                                          msg:
+                                          'Please select your gender',
+                                          // textColor: Colors.red,
+                                          toastLength: Toast.LENGTH_LONG);
+                                    }else if ((DateTime.now().year -
+                                        dateTime.year) <
+                                        18) {
+                                      Fluttertoast.showToast(
+                                          msg:
+                                          'provide a valid date of birth',
+                                          //textColor: Colors.red,
+                                          toastLength: Toast.LENGTH_LONG);
+                                    } else {
+                                      setState(() {
+                                        validated = true;
+                                        processing = true;
+                                        firstName = firstname.text;
+                                        lastName = lastname.text;
+                                        id = idnumber.text;
+                                      });
+                                      firestore.collection('users').doc().set({
+                                        'accountnumber':accountNumber.value,
+                                        'idnumber':idnumber.text,
+                                        'first_name':firstname.text,
+                                        'last_name':lastname.text,
+                                        'uid':user!.uid,
+                                        'gender':gender,
+                                        'DOB':dateTime
 
-                                            }).then((value){
-                                              Navigator.of(context).pop();
-                                              setState(() {
-                                                processing = false;
-                                              });
-                                            });
-                                          }
-                                        }
+                                      }).then((value){
+                                        Navigator.of(context).pushReplacementNamed('/myitems');
+                                        setState(() {
+                                          processing = false;
+                                        });
+                                      });
+                                    }
+                                  }
                                       : () {
-                                          Fluttertoast.showToast(
-                                              msg: 'please wait...');
-                                        },
+                                    Fluttertoast.showToast(
+                                        msg: 'please wait...');
+                                  },
                                   child: !processing
                                       ? Container(
-                                          height: 50,
-                                          width: 150,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(25),
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.red
-                                                    : Colors.blue,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                'Continue',
-                                                style: _style.copyWith(
-                                                    color: Colors.white),
-                                              ),
-                                              const Icon(
-                                                CupertinoIcons.forward,
-                                                color: Colors.white,
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      : const Center(
-                                          child: CircularProgressIndicator(),
+                                    height: 50,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.circular(25),
+                                      color:
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark
+                                          ? Colors.red
+                                          : Colors.blue,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Continue',
+                                          style: _style.copyWith(
+                                              color: Colors.white),
                                         ),
+                                        const Icon(
+                                          CupertinoIcons.forward,
+                                          color: Colors.white,
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                      : const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
                                 ),
                               ),
                             )
@@ -571,10 +515,10 @@ class _RegisterFormState extends State<RegisterForm> {
 class DeptDialog extends StatefulWidget {
   const DeptDialog(
       {Key? key,
-      required this.document,
-      required this.id,
-      required this.firstName,
-      required this.lastName})
+        required this.document,
+        required this.id,
+        required this.firstName,
+        required this.lastName})
       : super(key: key);
   final String document;
   final String id;
@@ -596,52 +540,52 @@ class _DeptDialogState extends State<DeptDialog> {
         title: Text(widget.document == 'equity' ? 'Equity Bank' : ''),
         content: StreamBuilder<DocumentSnapshot>(
             stream:
-                firestore.collection('banks').doc(widget.document).snapshots(),
+            firestore.collection('banks').doc(widget.document).snapshots(),
             builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
               return snapshot.hasData
                   ? Material(
-                      color: Colors.transparent,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              'please provide your account number below for authorization'),
-                              Divider(),
-                              Text('first name: ${widget.firstName.isEmpty?'not provided':widget.firstName }'),
-                              Divider(),
-                              Text('last name: ${widget.lastName.isEmpty?'not provided':widget.lastName }'),
-                              Divider(),
-                              Text('identification number: ${widget.id.isEmpty?'not provided':widget.id }'),
-                              Divider(),
+                color: Colors.transparent,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        'please provide your account number below for authorization'),
+                    Divider(),
+                    Text('first name: ${widget.firstName.isEmpty?'not provided':widget.firstName }'),
+                    Divider(),
+                    Text('last name: ${widget.lastName.isEmpty?'not provided':widget.lastName }'),
+                    Divider(),
+                    Text('identification number: ${widget.id.isEmpty?'not provided':widget.id }'),
+                    Divider(),
 
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: TextFormField(
-                              controller: accNoController,
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return 'account number is required';
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                fillColor: Theme.of(context).brightness ==
-                                        Brightness.light
-                                    ? Colors.blue.withOpacity(.1)
-                                    : Colors.red.withOpacity(.1),
-                                filled: true,
-                                labelText: 'account number',
-                                labelStyle: _style.copyWith(fontSize: 12),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: TextFormField(
+                        controller: accNoController,
+                        validator: (val) {
+                          if (val == null || val.isEmpty) {
+                            return 'account number is required';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          fillColor: Theme.of(context).brightness ==
+                              Brightness.light
+                              ? Colors.blue.withOpacity(.1)
+                              : Colors.red.withOpacity(.1),
+                          filled: true,
+                          labelText: 'account number',
+                          labelStyle: _style.copyWith(fontSize: 12),
 
-                                // border: OutlineInputBorder(
-                                //     borderRadius:
-                                //         BorderRadius.circular(10))
-                              ),
-                            ),
-                          ),
-                        ],
+                          // border: OutlineInputBorder(
+                          //     borderRadius:
+                          //         BorderRadius.circular(10))
+                        ),
                       ),
-                    )
+                    ),
+                  ],
+                ),
+              )
                   : Container();
             }),
         actions: [
@@ -650,7 +594,7 @@ class _DeptDialogState extends State<DeptDialog> {
           }, child: Text('cancel')),
           TextButton(onPressed: () {
             accountNumber = ValueNotifier(accNoController.text);
-             Navigator.of(context).pop();
+            Navigator.of(context).pop();
           }, child: Text('OK'))
         ],
       ),

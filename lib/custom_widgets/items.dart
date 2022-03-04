@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -27,8 +30,8 @@ class Items extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(4.0),
-          child: Container(
-            width: size.width / 2.5,
+          child: SizedBox(
+            width: size.width / 6,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -58,7 +61,8 @@ class BottomBarTiles extends StatefulWidget {
         this.hasSubtitle,
         this.subtitle,
         this.index,
-        this.color})
+        this.color,
+      this.page})
       : super(key: key);
   final image;
   final title;
@@ -66,6 +70,7 @@ class BottomBarTiles extends StatefulWidget {
   final subtitle;
   final index;
   final color;
+  final page;
   @override
   _BottomBarTilesState createState() => _BottomBarTilesState();
 }
@@ -76,7 +81,11 @@ class _BottomBarTilesState extends State<BottomBarTiles> {
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       onTap: () {
-        print(widget.title);
+        if (kDebugMode) {
+          print(widget.title);
+          print(widget.page);
+        }
+        Navigator.pushNamed(context, widget.page);
       },
       leading: Card(
         color: Theme.of(context).brightness == Brightness.dark

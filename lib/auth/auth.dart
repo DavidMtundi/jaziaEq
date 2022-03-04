@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jazia/screens/signin.dart';
 import 'package:jazia/trydart/landpage.dart';
@@ -22,7 +23,9 @@ signOut(){
   _auth.signOut();
 }
   Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
+   late UserCredential authenticate;
+    try {
+       // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
@@ -35,6 +38,10 @@ signOut(){
     );
 
     // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    authenticate = await FirebaseAuth.instance.signInWithCredential(credential);
+    }on FirebaseAuthException catch (e) {
+      Fluttertoast.showToast(msg: e.message.toString());
+    }
+   return authenticate;
   }
 }

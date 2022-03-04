@@ -207,7 +207,10 @@ class _LandOrderState extends State<LandOrder> {
                     controller: _controller,
                     maxLines: 8,
                     decoration: InputDecoration.collapsed(
-                        fillColor: Colors.teal.withOpacity(.1),
+                        fillColor: Theme.of(context).brightness ==
+                            Brightness.light
+                            ? Colors.blue.withOpacity(.1)
+                            : Colors.red.withOpacity(.1),
                         filled: true,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15)),
@@ -221,11 +224,11 @@ class _LandOrderState extends State<LandOrder> {
                     child:
                         ElevatedButton(onPressed: () {
                           firestore.collection('business').doc('electronics').collection('requests').doc().set({
-                            'User':_auth.currentUser!.uid,
-                            'Name':_auth.currentUser!.displayName,
-                            'UserUrl':_auth.currentUser!.photoURL,
-                            'Message': _controller.text,
-                            'Time': DateTime.now()
+                            'user':_auth.currentUser!.uid,
+                            'name':_auth.currentUser!.displayName,
+                            'userUrl':_auth.currentUser!.photoURL,
+                            'message': _controller.text,
+                            'time': DateTime.now()
                           });
                           //print(_controller.text);
                         }, child: Text('Submit')),
