@@ -3,7 +3,7 @@ import 'package:jazia/Smsfunctions/firestoreupload.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-var regexpMoney = RegExp(r'(["ksh""Ksh""KSh""KSH""USD"]+\.?\ ?[0-9])\d+');
+var regexpMoney = RegExp(r'(["ksh""Ksh""KSh""KSH""USD"]+\.?\ ?[0-9]\?,?[0-9])\d+');
 
 var regexpDate = RegExp(r'([0-9]+\/?\.?[0-9]+\/?\.?[0-9])\w+');
 
@@ -130,7 +130,7 @@ class CheckRegex {
   ///returns the amount transacted
   double getAmount(String s) {
     double amounttransacted = 0;
-   if((s.contains('sent'))||(s.contains('received'))){
+   if((s.contains('sent'))||(s.contains('received'))||(s.contains('paid'))){
       if (regexpMoney.hasMatch(s.toString())) {
       var moneymatches =
           regexpMoney.firstMatch(s.toString())!.group(0).toString();

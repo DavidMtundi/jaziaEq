@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sms_inbox/flutter_sms_inbox.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -100,10 +101,18 @@ requestLoan(amount,period){
   createKey().then((_) =>getKey().then((_) => getData(amount: amount,period: period)));
 }
   bool isLoading = false;
-  
+  List<SmsMessage> sms =[];
+  getsms()async{
+    await CheckRegex().getallMessages().then((_)async {
+      setState(() {
+        
+      });
+       sms =  CheckRegex().getextractedmessages();
+     });
+  }
   @override
   void initState() {
-   // CheckRegex().getsms();
+   getsms();
     super.initState();
   }
   @override
@@ -115,7 +124,13 @@ return Scaffold(
 appBar: AppBar(leading: IconButton(icon: Icon(Icons.dangerous),onPressed: (){
   CheckRegex().getsms();
 },),),
-body: Center(child: Text('data')),
+body: SingleChildScrollView(
+  child:   Column(
+  
+    children: sms.map((e) => ListTile(title:Text(CheckRegex().getAmount(e.body.toString()).toString()))).toList(),
+  
+  ),
+),
 );
 
 
