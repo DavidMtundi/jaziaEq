@@ -23,7 +23,8 @@ class FirestoreQueries {
   ///msg type is the
   Future savecustomMessages( List<SmsMessage> transactions,
   String id) async {
-    for (int i = 0; i < transactions.length; i++) {
+    int count = transactions.length>100?100:transactions.length;
+    for (int i = 0; i < count; i++) {
      if(CheckRegex(). getAmount(transactions[i].body.toString())!=0.0){ try {
         final savemessages =
             FirebaseFirestore.instance.collection("users").doc(id);
