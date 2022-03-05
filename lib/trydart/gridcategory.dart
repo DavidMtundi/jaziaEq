@@ -26,8 +26,8 @@ class _GridWidgetState extends State<GridWidget> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   ///TODO: HAPA NITAFIKIRIA KESHO
-                               //     Expanded(child: Icon(choice!.icon, size:50.0, color: textStyle!.color)),
-                             // Text(doc.id)),
+                                    Expanded(child: Image.network(doc['iconurl'])),
+                              Text(doc.id),
                                   ],
                                 ),
                               ),

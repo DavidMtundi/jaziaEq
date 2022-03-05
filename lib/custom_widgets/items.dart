@@ -3,6 +3,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Items extends StatelessWidget {
   const Items({
@@ -76,6 +78,25 @@ class BottomBarTiles extends StatefulWidget {
 }
 
 class _BottomBarTilesState extends State<BottomBarTiles> {
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> checkSell () async {
+
+        var checkUserSeller = firestore.collection('userSell').where('uid', isEqualTo: _auth.currentUser!.uid).get();
+        checkUserSeller.then((value) {
+          try{
+            Navigator.pushNamed(context, '/myitems');
+            print(value.docs.first.id);
+        } catch(e){
+            print(e);
+            Navigator.pushNamed(context, '/verifyseller');
+          }
+      });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -85,7 +106,14 @@ class _BottomBarTilesState extends State<BottomBarTiles> {
           print(widget.title);
           print(widget.page);
         }
-        Navigator.pushNamed(context, widget.page);
+        if(widget.title == 'Sell an item'){
+          if (kDebugMode) {
+            print('Sell an item confirmed');
+          }
+          checkSell();
+        } else {
+          Navigator.pushNamed(context, widget.page);
+        }
       },
       leading: Card(
         color: Theme.of(context).brightness == Brightness.dark

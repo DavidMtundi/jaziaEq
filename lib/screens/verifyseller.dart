@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 
@@ -25,12 +26,28 @@ class VerifySeller extends StatefulWidget {
 
 class _VerifySellerState extends State<VerifySeller> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController firstname = TextEditingController();
-  TextEditingController lastname = TextEditingController();
   TextEditingController idnumber = TextEditingController();
+  TextEditingController company = TextEditingController();
+  TextEditingController phonenumber = TextEditingController();
+
+  String dropdownvalue = 'electronics';
+
+  var items = [
+    'electronics',
+    'art',
+    'clothing',
+    'phones',
+    'property',
+    'construction equipment',
+    'toys',
+    'vehicles',
+  ];
+
+  ///TODO: SHAREDPREFERENCE COMING UP NEXT
+
   User? user = FirebaseAuth.instance.currentUser;
   String gender = '';
-  String dropDownValue = 'equity';
+  //String dropDownValue = 'equity';
   String documentName = '';
   DateTime dateTime = DateTime.now();
   bool validated = false;
@@ -41,6 +58,7 @@ class _VerifySellerState extends State<VerifySeller> {
   String bankName = '';
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 
   Widget courses() {
     return StreamBuilder<QuerySnapshot>(
@@ -56,44 +74,13 @@ class _VerifySellerState extends State<VerifySeller> {
                   'Select your Bank',
                   style: _style,
                 ),
-                DropdownButton<dynamic>(
-                  value: dropDownValue,
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  items: snapshot.data!.docs.map((element) {
-                    return DropdownMenuItem(
-                        value: element.id,
-                        child: Text(element['name'],
-                            style: GoogleFonts.varela(fontSize: 11)));
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      dropDownValue = newValue.toString();
-                      accountNumber.value = '';
-                    });
-
-                    // splitDocName(newValue);
-                    dropDownValue == 'equity'
-                        ? showDialog(
-                        context: context,
-                        builder: (context) {
-                          return DeptDialog(
-                              document: dropDownValue,
-                              id: idnumber.text,
-                              firstName: firstname.text,
-                              lastName: lastname.text);
-                        })
-                        : Fluttertoast.showToast(
-                        msg:
-                        'this bank is not currently supported for jazia services',
-                        toastLength: Toast.LENGTH_LONG);
-                  },
-                ),
               ],
             ),
           )
               : Container();
         });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +181,7 @@ class _VerifySellerState extends State<VerifySeller> {
                                     ? Colors.blue.withOpacity(.1)
                                     : Colors.red.withOpacity(.1),
                                 filled: true,
-                                labelText: 'identification number',
+                                labelText: 'ID number',
                                 labelStyle: _style.copyWith(fontSize: 12),
                                 // border: OutlineInputBorder(
                                 //     borderRadius:
@@ -203,7 +190,7 @@ class _VerifySellerState extends State<VerifySeller> {
                             ),
                             const SizedBox(height: 15),
                             TextFormField(
-                              controller: idnumber,
+                              controller: phonenumber,
                               validator: (val) {
                                 if (val == null || val.isEmpty) {
                                   return 'please enter your Phone number';
@@ -222,6 +209,62 @@ class _VerifySellerState extends State<VerifySeller> {
                                 //     borderRadius:
                                 //         BorderRadius.circular(10))
                               ),
+                            ),
+                            const SizedBox(height: 15),
+                            TextFormField(
+                              controller: company,
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return 'please enter your company name';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                fillColor: Theme.of(context).brightness ==
+                                    Brightness.light
+                                    ? Colors.blue.withOpacity(.1)
+                                    : Colors.red.withOpacity(.1),
+                                filled: true,
+                                labelText: 'company name',
+                                labelStyle: _style.copyWith(fontSize: 12),
+                                // border: OutlineInputBorder(
+                                //     borderRadius:
+                                //         BorderRadius.circular(10))
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 12,
+                                bottom: 5,
+                              ),
+                              child: Text(
+                                'Select business category',
+                                style: _style,
+                              ),
+                            ),
+                            DropdownButton(
+
+                              // Initial Value
+                              value: dropdownvalue,
+
+                              // Down Arrow Icon
+                              icon: const Icon(Icons.keyboard_arrow_down),
+
+                              // Array list of items
+                              items: items.map((String items) {
+                                return DropdownMenuItem(
+                                  value: items,
+                                  child: Text(items),
+                                );
+                              }).toList(),
+                              // After selecting the desired option,it will
+                              // change button value to selected value
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  dropdownvalue = newValue!;
+                                });
+                              },
                             ),
                             const SizedBox(
                               height: 20,
@@ -251,8 +294,8 @@ class _VerifySellerState extends State<VerifySeller> {
                                             return DeptDialog(
                                                 document: documentName,
                                                 id: idnumber.text,
-                                                firstName: firstname.text,
-                                                lastName: lastname.text);
+                                              company: company.text,
+                                                );
                                           });
                                     },
                                     child: Text(
@@ -439,18 +482,15 @@ class _VerifySellerState extends State<VerifySeller> {
                                       setState(() {
                                         validated = true;
                                         processing = true;
-                                        firstName = firstname.text;
-                                        lastName = lastname.text;
                                         id = idnumber.text;
                                       });
-                                      firestore.collection('users').doc().set({
-                                        'accountnumber':accountNumber.value,
+                                      firestore.collection('userSell').doc(user!.uid).set({
+                                        //'accountnumber':accountNumber.value,
+                                        'company':company.text,
                                         'idnumber':idnumber.text,
-                                        'first_name':firstname.text,
-                                        'last_name':lastname.text,
                                         'uid':user!.uid,
                                         'gender':gender,
-                                        'DOB':dateTime
+                                        'DOB':dateTime,
 
                                       }).then((value){
                                         Navigator.of(context).pushReplacementNamed('/myitems');
@@ -517,13 +557,14 @@ class DeptDialog extends StatefulWidget {
       {Key? key,
         required this.document,
         required this.id,
-        required this.firstName,
-        required this.lastName})
+        required this.company
+        })
       : super(key: key);
   final String document;
   final String id;
-  final String firstName;
-  final String lastName;
+  final String company;
+
+
   @override
   _DeptDialogState createState() => _DeptDialogState();
 }
@@ -550,11 +591,7 @@ class _DeptDialogState extends State<DeptDialog> {
                   children: [
                     Text(
                         'please provide your account number below for authorization'),
-                    Divider(),
-                    Text('first name: ${widget.firstName.isEmpty?'not provided':widget.firstName }'),
-                    Divider(),
-                    Text('last name: ${widget.lastName.isEmpty?'not provided':widget.lastName }'),
-                    Divider(),
+
                     Text('identification number: ${widget.id.isEmpty?'not provided':widget.id }'),
                     Divider(),
 
