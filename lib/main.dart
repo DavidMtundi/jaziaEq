@@ -96,15 +96,17 @@ class _MyAppState extends State<MyApp> {
 
     if(status.isDenied || messagePermission.isDenied){
 
-        await Permission.contacts.request();
-        await Permission.sms.request();
+        await Permission.contacts.request().then((value) async{
+          await Permission.sms.request();
+        });
+       // await Permission.sms.request();
     }
   }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-     requestPermisssion();
+    // requestPermisssion();
 
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     if (kDebugMode) {

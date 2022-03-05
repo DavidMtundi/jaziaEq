@@ -3,14 +3,15 @@ import 'package:jazia/Smsfunctions/firestoreupload.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-var regexpMoney = RegExp(r'(["ksh""Ksh""KSh""KSH""USD"]+\.?\ ?[0-9])\d+');
+var regexpMoney =
+    RegExp(r'(["ksh""Ksh""KSh""KSH""USD""KES"]+\.?\ ?[0-9]?\,?[0-9])\d+');
 
 var regexpDate = RegExp(r'([0-9]+\/?\.?[0-9]+\/?\.?[0-9])\w+');
 
 List<String> allowedIds = ["MPESA", "KCB", "FamilyBank"];
 
 ///add all banks here to check if the person is currently using any bank
-List<String> allBanks = ["KCB", "EQUITY", "KCB-INFO", "FamilyBank"];
+List<String> allBanks = ["KCB", "EQUITY", "FamilyBank"];
 List<SmsMessage> alltransactions = [];
 
 List<String> banksConfirmed = [];
@@ -23,7 +24,7 @@ class CheckRegex {
   SmsMessage correctdata = SmsMessage("_address", "_body");
   DateTime now = DateTime.now();
   double totalvalues = 0;
-  FirestoreQueries firestoreQueries = FirestoreQueries();
+  //FirestoreQueries firestoreQueries = FirestoreQueries();
 
   ///returns all messages from the allowed senderids
   Future getallMessages() async {
@@ -59,7 +60,7 @@ class CheckRegex {
     if (alltransactions.isNotEmpty) {
       //save to the database
       for (var i = 0; i < alltransactions.length; i++) {
-        await firestoreQueries.updatedSave(
+        await FirestoreQueries().updatedSave(
             alltransactions[i].sender.toString(),
             getAmount(alltransactions[i].body.toString()).toString(),
             getStatus(alltransactions[i].body.toString()),
@@ -106,7 +107,17 @@ class CheckRegex {
 
   ///returns all transactions
   List<SmsMessage> getextractedmessages() {
+    // print(alltransactions);
     return alltransactions;
+  }
+
+  getsms() async {
+    await getallMessages().then((value) {
+      //  print(getextractedmessages().length);
+      getextractedmessages().forEach((sms) {
+        print(getAmount(sms.body.toString()));
+      });
+    });
   }
 
   ///receives the string with the date then converts it to a useful date
@@ -120,25 +131,32 @@ class CheckRegex {
   ///returns the amount transacted
   double getAmount(String s) {
     double amounttransacted = 0;
-    if (regexpMoney.hasMatch(s.toString())) {
-      var moneymatches =
-          regexpMoney.firstMatch(s.toString())!.group(0).toString();
-      if (moneymatches.startsWith('ks') ||
-          (moneymatches.startsWith('KS') || (moneymatches.startsWith('Ks')))) {
-        try {
-          amounttransacted = double.parse(
-              moneymatches.toString().replaceAll(RegExp(r"\D"), ""));
-        } catch (e) {
-          amounttransacted = 0;
+    if ((s.contains('sent')) ||
+        (s.contains('received')) ||
+        (s.contains('transferred')) ||
+        (s.contains('paid'))) {
+      if (regexpMoney.hasMatch(s.toString())) {
+        var moneymatches =
+            regexpMoney.firstMatch(s.toString())!.group(0).toString();
+        if (moneymatches.startsWith('ks') ||
+            (moneymatches.startsWith('KS') ||
+                moneymatches.startsWith('KE') ||
+                (moneymatches.startsWith('Ks')))) {
+          try {
+            amounttransacted = double.parse(
+                moneymatches.toString().replaceAll(RegExp(r"\D"), ""));
+          } catch (e) {
+            amounttransacted = 0;
+          }
         }
+        if (moneymatches.startsWith("USD")) {
+          amounttransacted = double.parse(
+                  moneymatches.toString().replaceAll(RegExp(r"\D"), "")) *
+              100;
+        }
+      } else {
+        amounttransacted = 0;
       }
-      if (moneymatches.startsWith("USD")) {
-        amounttransacted = double.parse(
-                moneymatches.toString().replaceAll(RegExp(r"\D"), "")) *
-            100;
-      }
-    } else {
-      amounttransacted = 0;
     }
     return amounttransacted;
   }

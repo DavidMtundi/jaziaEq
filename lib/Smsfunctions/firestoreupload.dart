@@ -33,9 +33,9 @@ class FirestoreQueries {
             .doc(msgtype)
             .collection(status)
             .doc(transactions[i].date.toString())
-            .update({
+            .set({
           'amount': FieldValue.arrayUnion([amount]),
-        });
+        },SetOptions(merge:true));
       } catch (e) {
         print(e.toString());
       }
