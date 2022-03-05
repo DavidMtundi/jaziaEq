@@ -4,13 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jazia/custom_widgets/imagewidget.dart';
+import 'package:jazia/main.dart';
 import 'package:jazia/trydart/uploadonly.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'expandable_floating_button.dart';
 
 var date = ValueNotifier<DateTime>(DateTime.now());
 
-
+@immutable
 class ProfileExisting extends StatefulWidget {
   const ProfileExisting({Key? key}) : super(key: key);
 
@@ -180,6 +182,40 @@ class _ProfileExistingState extends State<ProfileExisting> {
                     ),
                   ]
               ))
+        ],
+      ),
+      floatingActionButton: ExpandableFab(
+        distance: 112.0,
+        children: [
+          ActionButton(
+            onPressed: () => print('GHI'),
+            icon: const Icon(Icons.help_outline),
+          ),
+          ActionButton(
+            onPressed: () => getTheme(),
+            icon: const Icon(Icons.settings_outlined),
+          ),
+          ActionButton(
+            onPressed: () => print('DEF'),
+            icon: const Icon(Icons.list),
+          ),
+          ActionButton(
+            onPressed: () async{
+              Navigator.pushNamed(context, '/chatrequests');
+
+            },
+            icon: const Icon(Icons.chat_bubble_outline_rounded),
+          ),
+          ActionButton(
+            onPressed: () async{
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const UploadDialogBox();
+                  });
+            },
+            icon: const Icon(Icons.add_circle_outline_outlined),
+          ),
         ],
       ),
     );
