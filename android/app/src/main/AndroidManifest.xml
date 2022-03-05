@@ -1,6 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hq.jazia">
-   <application
+
+    <uses-permission android:name= "android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+
+    <application
         android:label="jazia"
         android:icon="@mipmap/ic_launcher">
         <activity

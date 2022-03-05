@@ -18,7 +18,21 @@ class _GridWidgetState extends State<GridWidget> {
                           crossAxisCount: 3,
                           crossAxisSpacing: 4.0,
                           mainAxisSpacing: 8.0,
-                          children: snapshot.data!.docs.map((doc)=>Card(child: Text(doc.id),),).toList()
+                          children: snapshot.data!.docs.map((doc)=>
+                              Card(
+                                elevation: 11,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  ///TODO: HAPA NITAFIKIRIA KESHO
+                               //     Expanded(child: Icon(choice!.icon, size:50.0, color: textStyle!.color)),
+                             // Text(doc.id)),
+                                  ],
+                                ),
+                              ),
+                            
+                          ).toList()
                           // List.generate(choices.length, (index) {
                           //   return Center(
                           //     child: SelectCard(choice: choices[index]),

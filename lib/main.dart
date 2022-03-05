@@ -1,3 +1,4 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,6 +15,7 @@ import 'package:jazia/services/constants.dart';
 import 'package:jazia/services/theme_notifier.dart';
 import 'package:jazia/trydart/landorder.dart';
 import 'package:jazia/trydart/readonly.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Smsfunctions/GetMessages.dart';
@@ -86,15 +88,29 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    requestPermisssion();
+  }
+  requestPermisssion()async{
+    var status = await Permission.contacts.status;
+    var messagePermission = await Permission.sms.status;
+
+    if(status.isDenied || messagePermission.isDenied){
+
+        await Permission.contacts.request();
+        await Permission.sms.request();
+    }
   }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+     requestPermisssion();
+
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     if (kDebugMode) {
-      print("the fingerprint id is ${deviceFingerprint.toString()}");
+     // print("the fingerprint id is ${deviceFingerprint.toString()}");
     }
+
     return MaterialApp(
         title: 'Flutter Demo',
         theme: AppTheme().lightTheme,
