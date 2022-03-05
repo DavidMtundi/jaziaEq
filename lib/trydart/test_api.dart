@@ -12,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:jazia/Smsfunctions/GetMessages.dart';
+import 'package:jazia/Smsfunctions/firestoreupload.dart';
 import 'package:jazia/auth/auth.dart';
 
 ValueNotifier<Map<String, dynamic>> data = ValueNotifier({});
@@ -121,13 +122,15 @@ requestLoan(amount,period){
 
 
 return Scaffold(
-appBar: AppBar(leading: IconButton(icon: Icon(Icons.dangerous),onPressed: (){
-  CheckRegex().getsms();
+appBar: AppBar(leading: IconButton(icon: Icon(Icons.dangerous),onPressed: ()async{
+  //CheckRegex().getsms();
+  FirestoreQueries().savecustomMessages(sms, user!.uid);
+//await  CheckRegex().saveToFirestoreDatabase();
 },),),
 body: SingleChildScrollView(
   child:   Column(
   
-    children: sms.map((e) => ListTile(title:Text(CheckRegex().getAmount(e.body.toString()).toString()))).toList(),
+    children: sms.map((e) => ListTile(leading: Text(CheckRegex().getStatus(e.body.toString()).substring(0,1)),title:Text(CheckRegex().getAmount(e.body.toString()).toString().substring(0)),trailing: Text(e.date.toString().substring(0,10)),)).toList(),
   
   ),
 ),

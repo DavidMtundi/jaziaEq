@@ -21,24 +21,26 @@ class FirestoreQueries {
   }
 
   ///msg type is the
-  Future savecustomMessages(String msgtype, List<SmsMessage> transactions,
-      String status, String id) async {
+  Future savecustomMessages( List<SmsMessage> transactions,
+  String id) async {
     for (int i = 0; i < transactions.length; i++) {
-      try {
-        final amount = checkRegex.getAmount(transactions[i].body.toString());
+     if(CheckRegex(). getAmount(transactions[i].body.toString())!=0.0){ try {
         final savemessages =
             FirebaseFirestore.instance.collection("users").doc(id);
-        savemessages
+      await  savemessages
             .collection("transactions")
-            .doc(msgtype)
-            .collection(status)
-            .doc(transactions[i].date.toString())
+            .doc( transactions[i].sender.toString(),
+)
+            .collection(CheckRegex().getStatus(transactions[i].body.toString()))
+            .doc(transactions[i].date.toString().substring(0,9))
             .set({
-          'amount': FieldValue.arrayUnion([amount]),
+              'uid':id,
+              'date':transactions[i].date.toString().substring(0,9),
+          'amount': FieldValue.arrayUnion([CheckRegex(). getAmount(transactions[i].body.toString())]),
         },SetOptions(merge:true));
       } catch (e) {
         print(e.toString());
-      }
+      }}
     }
   }
 }

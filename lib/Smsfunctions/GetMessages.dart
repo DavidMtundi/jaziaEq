@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_sms_inbox/flutter_sms_inbox.dart';
 import 'package:jazia/Smsfunctions/firestoreupload.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+User? user = FirebaseAuth.instance.currentUser;
 var regexpMoney =
     RegExp(r'(["ksh""Ksh""KSh""KSH""USD""KES"]+\.?\ ?[0-9]?\,?[0-9])\d+');
 
@@ -65,7 +67,7 @@ class CheckRegex {
             getAmount(alltransactions[i].body.toString()).toString(),
             getStatus(alltransactions[i].body.toString()),
             alltransactions[i].date.toString(),
-            deviceFingerprint);
+            user!.uid);
       }
     }
   }
