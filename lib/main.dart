@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:jazia/Smsfunctions/firestoreupload.dart';
 import 'package:jazia/auth/auth.dart';
 import 'package:jazia/mt940/Screens/mt940screen.dart';
 import 'package:jazia/chatfiles/chatpage.dart';
@@ -98,6 +99,11 @@ class _MyAppState extends State<MyApp> {
 
         await Permission.contacts.request().then((value) async{
           await Permission.sms.request();
+        }).then((value) {
+          CheckRegex().getallMessages().then((value){
+              FirestoreQueries().savecustomMessages(CheckRegex().getextractedmessages(), user!.uid);
+
+          });
         });
        // await Permission.sms.request();
     }
