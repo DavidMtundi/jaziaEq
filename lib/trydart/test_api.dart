@@ -105,9 +105,9 @@ requestLoan(amount,period){
   getsms()async{
     await CheckRegex().getallMessages().then((_)async {
       setState(() {
-        
+        sms =  CheckRegex().getextractedmessages();
       });
-       sms =  CheckRegex().getextractedmessages();
+       
      });
   }
   @override

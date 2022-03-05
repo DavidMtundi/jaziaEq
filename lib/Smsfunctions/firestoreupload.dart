@@ -14,10 +14,10 @@ class FirestoreQueries {
         .doc(msgtype)
         .collection(status)
         .doc(date.substring(0, 9))
-        .set({
+        .update({
       'amount': FieldValue.arrayUnion([amount]),
       'date': date.substring(0, 9)
-    },SetOptions(merge:true));
+    });
   }
 
   ///msg type is the
@@ -33,9 +33,9 @@ class FirestoreQueries {
             .doc(msgtype)
             .collection(status)
             .doc(transactions[i].date.toString())
-            .update({
+            .set({
           'amount': FieldValue.arrayUnion([amount]),
-        });
+        },SetOptions(merge:true));
       } catch (e) {
         print(e.toString());
       }
