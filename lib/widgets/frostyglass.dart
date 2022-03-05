@@ -10,9 +10,9 @@ class FrostedGlassBox extends StatelessWidget {
 
   const FrostedGlassBox(
       {Key? key,
-        required this.width,
-        required this.height,
-        required this.child})
+      required this.width,
+      required this.height,
+      required this.child})
       : super(key: key);
 
   @override
