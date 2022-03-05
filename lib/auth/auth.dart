@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -39,6 +40,10 @@ signOut(){
 
     // Once signed in, return the UserCredential
     authenticate = await FirebaseAuth.instance.signInWithCredential(credential);
+     FirebaseFirestore.instance.collection('users').doc(authenticate.user!.uid).set({
+       'name':authenticate.user!.displayName,
+       'uid':authenticate.user!.uid,
+     },SetOptions(merge:true));
     }on FirebaseAuthException catch (e) {
       Fluttertoast.showToast(msg: e.message.toString());
     }

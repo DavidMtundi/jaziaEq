@@ -35,7 +35,7 @@ class _RegisterNewFormState extends State<RegisterNewForm> {
   TextEditingController repassword = TextEditingController();
   User? user = FirebaseAuth.instance.currentUser;
   String gender = '';
-  String dropDownValue = 'equity';
+  String dropDownValue = 'kenyan';
   String documentName = '';
   DateTime dateTime = DateTime.now();
   bool validated = false;
@@ -47,19 +47,11 @@ class _RegisterNewFormState extends State<RegisterNewForm> {
 
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  ScrollController? _scrollController;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    _scrollController = ScrollController();
-    super.initState();
-  }
+createAccount(){}
 
   Widget courses() {
     return StreamBuilder<QuerySnapshot>(
-        stream: firestore.collection('banks').snapshots(),
+        stream: firestore.collection('countries').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           return snapshot.hasData
               ? Padding(
@@ -77,7 +69,7 @@ class _RegisterNewFormState extends State<RegisterNewForm> {
                   items: snapshot.data!.docs.map((element) {
                     return DropdownMenuItem(
                         value: element.id,
-                        child: Text(element['name'],
+                        child: Text(element.id,
                             style: GoogleFonts.varela(fontSize: 11)));
                   }).toList(),
                   onChanged: (newValue) {
@@ -87,20 +79,7 @@ class _RegisterNewFormState extends State<RegisterNewForm> {
                     });
 
                     // splitDocName(newValue);
-                    dropDownValue == 'equity'
-                        ? showDialog(
-                        context: context,
-                        builder: (context) {
-                          return DeptDialog(
-                              document: dropDownValue,
-                              id: idnumber.text,
-                              firstName: firstname.text,
-                              lastName: lastname.text);
-                        })
-                        : Fluttertoast.showToast(
-                        msg:
-                        'this bank is not currently supported for jazia services',
-                        toastLength: Toast.LENGTH_LONG);
+                   
                   },
                 ),
               ],
@@ -109,7 +88,7 @@ class _RegisterNewFormState extends State<RegisterNewForm> {
               : Container();
         });
   }
-
+ScrollController scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,9 +100,10 @@ class _RegisterNewFormState extends State<RegisterNewForm> {
             : Colors.red,
       ),
       body: Scrollbar(
+      controller: scrollController,
         isAlwaysShown: true,
         child: SingleChildScrollView(
-          controller: _scrollController,
+          controller: scrollController,
           child: SafeArea(
             child: Stack(
               children: [
@@ -277,7 +257,7 @@ class _RegisterNewFormState extends State<RegisterNewForm> {
                               ),
                               const SizedBox(height: 15),
                               TextFormField(
-                                controller: idnumber,
+                                controller: phonenumber,
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
                                     return 'please enter your Phone number';
@@ -299,7 +279,7 @@ class _RegisterNewFormState extends State<RegisterNewForm> {
                               ),
                               const SizedBox(height: 15),
                               TextFormField(
-                                controller: idnumber,
+                                controller: emailaddress,
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
                                     return 'please enter your Email Address';
@@ -600,21 +580,28 @@ class _RegisterNewFormState extends State<RegisterNewForm> {
                                           lastName = lastname.text;
                                           id = idnumber.text;
                                         });
-                                        firestore.collection('users').doc().set({
-                                          'accountnumber':accountNumber.value,
+                                      DocumentReference doc =  firestore.collection('banks').doc('equity').collection('userAccounts').doc(user!.uid);
+                                       doc.get().then((value) => !value.exists?firestore.collection('banks').doc('equity').collection('userAccounts').doc(user!.uid).set({
+                                          'acc_no':accountNumber.value,
                                           'idnumber':idnumber.text,
                                           'first_name':firstname.text,
                                           'last_name':lastname.text,
                                           'uid':user!.uid,
                                           'gender':gender,
-                                          'DOB':dateTime
+                                          'date-of-birth':dateTime,
+                                          'auth':password.text,
+                                          'balance':0,
+                                          'phone':phonenumber.text,
+                                          'email':emailaddress.text,
+                                          'address':physicaladdress.text,
+
 
                                         }).then((value){
                                           Navigator.of(context).pop();
                                           setState(() {
                                             processing = false;
                                           });
-                                        });
+                                        }):Fluttertoast.showToast(msg: 'account already exists')) ;
                                       }
                                     }
                                         : () {
