@@ -8,6 +8,7 @@ import 'package:jazia/chatfiles/chatrequest.dart';
 import 'package:jazia/screens/indevelopment.dart';
 import 'package:jazia/screens/register.dart';
 import 'package:jazia/screens/registernew.dart';
+import 'package:jazia/screens/verifyseller.dart';
 import 'package:jazia/services/app_theme.dart';
 import 'package:jazia/services/constants.dart';
 import 'package:jazia/services/theme_notifier.dart';
@@ -109,6 +110,7 @@ class _MyAppState extends State<MyApp> {
           '/registerform': (context) => const RegisterForm(),
           '/myitems': (context) => const ProfileExisting(),
           '/indevelopment': (context) => const InDevelopment(),
+          '/verifyseller': (context) => const VerifySeller(),
         },
         //home: const PostSale(),
         home: AuthService().handleAuth() //const LandExisting(),

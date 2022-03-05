@@ -11,6 +11,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jazia/screens/register.dart';
 
+import '../screens/registernew.dart';
+
 class GetPrice extends StatefulWidget {
   int wig_price;
   GetPrice({Key? key, required this.wig_price}) : super(key: key);
@@ -25,7 +27,7 @@ class _GetPriceState extends State<GetPrice> {
 final User? _user = FirebaseAuth.instance.currentUser;
   ///UPLOAD THE ITEM TO DB
   ///
-bool userHasAccount(){
+/*bool userHasAccount(){
   bool hasAccount = false;
  var check = firestore.collection('users').doc(_user!.uid).get();
 check.then((value) {
@@ -35,12 +37,54 @@ if (kDebugMode) {
 }
 });
 return hasAccount;
-}
+}*/
 @override
   void initState() {
-    userHasAccount();
+    //userHasAccount();
     super.initState();
   }
+
+  Future navigateLink(BuildContext ctx)async{
+
+  Navigator.pop(ctx);
+
+  }
+
+  void _show(BuildContext ctx) async{
+     await showCupertinoModalPopup(
+        context: ctx,
+        builder: (_) => CupertinoActionSheet(
+          title: Text('Borrow from Jazia'),
+          message: Text('Link to a bank account that will be funded'),
+          actions: [
+            CupertinoActionSheetAction(
+                onPressed: () => {
+                  navigateLink(ctx).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterForm())),
+                  ),
+                  _close(ctx)
+                },
+                child: const Text('Link Jazia to Bank Account')),
+            CupertinoActionSheetAction(
+             // isDefaultAction: true,
+                onPressed: () => {
+                  navigateLink(ctx).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterNewForm())),
+                  )
+                  },
+                child: const Text('Create a Bank Account')),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => _close(ctx),
+            child: const Text('Close'),
+            isDefaultAction: true,
+          ),
+        ));
+  }
+
+  // This function is used to close the action sheet
+  void _close(BuildContext ctx) {
+    Navigator.of(ctx).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -60,11 +104,13 @@ return hasAccount;
         TextButton(
             onPressed: () {
              
-            userHasAccount()? showDialog(context: context, builder: (context){
+            /*userHasAccount()? showDialog(context: context, builder: (context){
               return CupertinoAlertDialog(
                 title: Text('hello'),
               );
-            }): Navigator.of(context).push(MaterialPageRoute(builder: (context)=>RegisterForm()));
+            }):*/
+           //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>RegisterForm()));
+              _show(context);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
