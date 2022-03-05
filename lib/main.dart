@@ -96,8 +96,10 @@ class _MyAppState extends State<MyApp> {
 
     if(status.isDenied || messagePermission.isDenied){
 
-        await Permission.contacts.request();
-        await Permission.sms.request();
+        await Permission.contacts.request().then((value) async{
+          await Permission.sms.request();
+        });
+       // await Permission.sms.request();
     }
   }
 
