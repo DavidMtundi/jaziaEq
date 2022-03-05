@@ -13,10 +13,10 @@ class FirestoreQueries {
         .collection("transactions")
         .doc(msgtype)
         .collection(status)
-        .doc(date.substring(0, 9))
+        .doc(date.substring(0, 10))
         .update({
       'amount': FieldValue.arrayUnion([amount]),
-      'date': date.substring(0, 9)
+      'date': date.substring(0, 10)
     });
   }
 
@@ -32,10 +32,10 @@ class FirestoreQueries {
             .doc( transactions[i].sender.toString(),
 )
             .collection(CheckRegex().getStatus(transactions[i].body.toString()))
-            .doc(transactions[i].date.toString().substring(0,9))
+            .doc(transactions[i].date.toString().substring(0,10))
             .set({
               'uid':id,
-              'date':transactions[i].date.toString().substring(0,9),
+              'date':transactions[i].date.toString().substring(0,10),
           'amount': FieldValue.arrayUnion([CheckRegex(). getAmount(transactions[i].body.toString())]),
         },SetOptions(merge:true));
       } catch (e) {
