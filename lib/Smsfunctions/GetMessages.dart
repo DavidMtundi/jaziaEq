@@ -46,7 +46,7 @@ class CheckRegex {
   /// returns sent if the cash is sent, otherwise returns received
   String getStatus(String s) {
     String status = "received";
-    if ((s.contains('sent') || (!s.contains('has'))) ||
+    if ((s.contains('sent')) ||
         (s.contains('paid')) ||
         (s.contains('debited'))) {
       status = "sent";
