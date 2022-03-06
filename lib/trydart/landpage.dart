@@ -15,6 +15,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../custom_widgets/items.dart';
 import '../custom_widgets/tilesdata.dart';
 
+
+String? landstream = 'items';
+
 var date = ValueNotifier<DateTime>(DateTime.now());
 
 class LandExisting extends StatefulWidget {
@@ -26,8 +29,6 @@ class LandExisting extends StatefulWidget {
 
 class _LandExistingState extends State<LandExisting>
     with SingleTickerProviderStateMixin {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late Future<String> _inst;
 
   int index = 0;
   bool _show = false;
@@ -38,11 +39,13 @@ class _LandExistingState extends State<LandExisting>
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
-      .collection('business')
-      .doc('electronics')
-      .collection('items')
-      .snapshots();
+
+
+  // final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
+  //     .collection('business')
+  //     .doc(name)
+  //     .collection('items')
+  //     .snapshots();
 
   ///BOTTOM SHEET WIDGET
   ///
@@ -191,6 +194,13 @@ class _LandExistingState extends State<LandExisting>
     }
     super.initState();
   }
+  var name ='electronics';
+  void tap (nm){
+    setState(() {
+name=nm;
+    });
+    print(name);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -318,7 +328,7 @@ class _LandExistingState extends State<LandExisting>
                   children: [
                     const Padding(
                       padding: EdgeInsets.all(15),
-                      child: Text('Toggle for Order Mode'),
+                      child: Text('Swipe to make a specific order to all sellers >>'),
                     ),
                     const Divider(
                       height: 5,
@@ -336,11 +346,14 @@ class _LandExistingState extends State<LandExisting>
                         height: MediaQuery.of(context).size.height / 3,
                         width: double.infinity,
                         //color: Colors.greenAccent,
-                        child: GridWidget(),
+                        child: GridWidget(tap: tap,),
                       ),
                     ),
                     StreamBuilder<QuerySnapshot>(
-                      stream: _usersStream,
+                      stream: firestore.collection('business')
+                          .doc(name)
+                          .collection('items')
+                          .snapshots(),
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasError) {
@@ -439,3 +452,4 @@ class _LandExistingState extends State<LandExisting>
     );
   }
 }
+

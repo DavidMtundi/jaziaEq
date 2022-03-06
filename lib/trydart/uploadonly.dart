@@ -9,6 +9,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UploadDialogBox extends StatefulWidget {
   final String? title, descriptions, text;
@@ -33,8 +35,22 @@ class _UploadDialogBoxState extends State<UploadDialogBox> {
   ///instance of firestore
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseStorage storage = FirebaseStorage.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
+  String dropdownvalue = 'electronics';
 
+  var items = [
+    'electronics',
+    'art',
+    'clothing',
+    'phones',
+    'property',
+    'construction equipment',
+    'toys',
+    'vehicles',
+  ];
+
+  TextStyle _style = GoogleFonts.varelaRound();
   // get permissions
 
   ///Image picker upload and url retrieve
@@ -75,10 +91,11 @@ class _UploadDialogBoxState extends State<UploadDialogBox> {
   }
   String? colorVal;
 
-  //end of random colors
+  SharedPreferences? pref;
 
   //upload image function
   Future uploadPic( BuildContext context) async {
+    pref = await SharedPreferences.getInstance();
     String fileName = basename(_image!.path);
     Reference firebaseStorageRef = storage.ref().child(fileName);
     UploadTask uploadTask = firebaseStorageRef.putFile(_image!);
@@ -105,20 +122,9 @@ class _UploadDialogBoxState extends State<UploadDialogBox> {
       'price': int.parse(_controller2.text),
       'description': _controller3.text,
       'url': '$downloadUrl',
-      /*'uploaded':{
-        DateTime.now().toString().substring(0,10):int.parse(_controller3.text)
-      },
-      'remaining':{
-        //DateTime.now().toString().substring(0,10):int.parse(_controller3.text)
-        DateTime.now().toString().substring(0,10):null
-
-      },
-      'updates':{
-        DateTime.now().toString().substring(0,10):{
-          'pos':0,
-          'neg':0
-        }
-      }*/
+      'phone': pref!.getString('phone'),
+      'uid': _auth.currentUser!.uid,
+      'category':dropdownvalue,
     },SetOptions(merge: true)).then((value) {
       setState(() {
         progress = false;
@@ -220,6 +226,40 @@ class _UploadDialogBoxState extends State<UploadDialogBox> {
                 SizedBox(height: 15,),
                 Column(
                   children: [
+                  Text(
+                  'Select add category',
+                  style: _style,
+                ),
+
+          DropdownButton(
+            // Initial Value
+            value: dropdownvalue,
+
+            // Down Arrow Icon
+            icon: const Icon(Icons.keyboard_arrow_down),
+
+            // Array list of items
+            items: items.map((String items) {
+              return DropdownMenuItem(
+                value: items,
+                child: Text(items),
+              );
+            }).toList(),
+            // After selecting the desired option,it will
+            // change button value to selected value
+            onChanged: (String? newValue) async {
+             // prefs = await SharedPreferences.getInstance();
+
+              setState(() {});
+                dropdownvalue = newValue!;
+
+             /* prefs!.setString('category', newValue!).then((value) {
+                print(prefs!.getString('category'));
+              });*/
+
+            },
+          ),
+                    SizedBox(height: 20,),
                     TextFormField(
                       decoration: InputDecoration(
                         hintText: 'Name of the Item:',
@@ -314,36 +354,44 @@ class _UploadDialogBoxState extends State<UploadDialogBox> {
           Positioned(
             left: Constants.padding,
             right: Constants.padding,
-            child: Row(
+            child: Column(
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  radius: Constants.avatarRadius,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(Constants.avatarRadius)),
-                    child: (_image != null)
-                        ? Image.file(_image!,)
-                        : Icon(Icons.ac_unit)
-                    /*Image.asset(
-                      'assets/placeholder.png',
-                    ),*/
-                  ),
+                Text(
+                  'Add an image',
+                  style: _style,
                 ),
-                IconButton(
-                    icon: Icon(Icons.image,
-                      size: 30,
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: Constants.avatarRadius,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(Constants.avatarRadius)),
+                        child: (_image != null)
+                            ? Image.file(_image!,)
+                            : Icon(Icons.ac_unit)
+                        /*Image.asset(
+                          'assets/placeholder.png',
+                        ),*/
+                      ),
                     ),
-                    onPressed: () {
-                      getImage();
-                    }
-                ),
-                IconButton(
-                    icon: Icon(Icons.camera,
-                      size: 30,
+                    IconButton(
+                        icon: Icon(Icons.image,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          getImage();
+                        }
                     ),
-                    onPressed: () {
-                      getCameraImage();
-                    }
+                    IconButton(
+                        icon: Icon(Icons.camera,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          getCameraImage();
+                        }
+                    ),
+                  ],
                 ),
               ],
             ),

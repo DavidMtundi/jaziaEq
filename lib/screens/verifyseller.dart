@@ -9,13 +9,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jazia/trydart/readonly.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 
 TextStyle _style = GoogleFonts.varelaRound();
 var accountNumber = ValueNotifier<String>('');
-
 
 class VerifySeller extends StatefulWidget {
   const VerifySeller({Key? key}) : super(key: key);
@@ -43,6 +43,8 @@ class _VerifySellerState extends State<VerifySeller> {
     'vehicles',
   ];
 
+  SharedPreferences? prefs;
+
   ///TODO: SHAREDPREFERENCE COMING UP NEXT
 
   User? user = FirebaseAuth.instance.currentUser;
@@ -59,28 +61,26 @@ class _VerifySellerState extends State<VerifySeller> {
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-
   Widget courses() {
     return StreamBuilder<QuerySnapshot>(
         stream: firestore.collection('banks').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           return snapshot.hasData
               ? Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Select your Bank',
-                  style: _style,
-                ),
-              ],
-            ),
-          )
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Select your Bank',
+                        style: _style,
+                      ),
+                    ],
+                  ),
+                )
               : Container();
         });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +177,7 @@ class _VerifySellerState extends State<VerifySeller> {
                               },
                               decoration: InputDecoration(
                                 fillColor: Theme.of(context).brightness ==
-                                    Brightness.light
+                                        Brightness.light
                                     ? Colors.blue.withOpacity(.1)
                                     : Colors.red.withOpacity(.1),
                                 filled: true,
@@ -199,7 +199,7 @@ class _VerifySellerState extends State<VerifySeller> {
                               },
                               decoration: InputDecoration(
                                 fillColor: Theme.of(context).brightness ==
-                                    Brightness.light
+                                        Brightness.light
                                     ? Colors.blue.withOpacity(.1)
                                     : Colors.red.withOpacity(.1),
                                 filled: true,
@@ -221,7 +221,7 @@ class _VerifySellerState extends State<VerifySeller> {
                               },
                               decoration: InputDecoration(
                                 fillColor: Theme.of(context).brightness ==
-                                    Brightness.light
+                                        Brightness.light
                                     ? Colors.blue.withOpacity(.1)
                                     : Colors.red.withOpacity(.1),
                                 filled: true,
@@ -244,7 +244,6 @@ class _VerifySellerState extends State<VerifySeller> {
                               ),
                             ),
                             DropdownButton(
-
                               // Initial Value
                               value: dropdownvalue,
 
@@ -260,10 +259,16 @@ class _VerifySellerState extends State<VerifySeller> {
                               }).toList(),
                               // After selecting the desired option,it will
                               // change button value to selected value
-                              onChanged: (String? newValue) {
+                              onChanged: (String? newValue) async {
+                                prefs = await SharedPreferences.getInstance();
+
                                 setState(() {
                                   dropdownvalue = newValue!;
                                 });
+                                prefs!.setString('category', newValue!).then((value) {
+                                  print(prefs!.getString('category'));
+                                });
+                                
                               },
                             ),
                             const SizedBox(
@@ -274,7 +279,7 @@ class _VerifySellerState extends State<VerifySeller> {
                               endIndent: 30,
                               thickness: .5,
                               color: Theme.of(context).brightness ==
-                                  Brightness.dark
+                                      Brightness.dark
                                   ? Colors.red
                                   : Colors.blue,
                             ),
@@ -284,29 +289,29 @@ class _VerifySellerState extends State<VerifySeller> {
                                 return accountNumber.value.isEmpty
                                     ? const SizedBox()
                                     : Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, bottom: 8.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return DeptDialog(
-                                                document: documentName,
-                                                id: idnumber.text,
-                                              company: company.text,
-                                                );
-                                          });
-                                    },
-                                    child: Text(
-                                      'account number: ${accountNumber.value}',
-                                      style: _style.copyWith(
-                                        decoration:
-                                        TextDecoration.underline,
-                                      ),
-                                    ),
-                                  ),
-                                );
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, bottom: 8.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return DeptDialog(
+                                                    document: documentName,
+                                                    id: idnumber.text,
+                                                    company: company.text,
+                                                  );
+                                                });
+                                          },
+                                          child: Text(
+                                            'account number: ${accountNumber.value}',
+                                            style: _style.copyWith(
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
+                                          ),
+                                        ),
+                                      );
                               },
                               valueListenable: accountNumber,
                             ),
@@ -401,7 +406,7 @@ class _VerifySellerState extends State<VerifySeller> {
                               endIndent: 30,
                               thickness: .5,
                               color: Theme.of(context).brightness ==
-                                  Brightness.dark
+                                      Brightness.dark
                                   ? Colors.red
                                   : Colors.blue,
                             ),
@@ -451,7 +456,7 @@ class _VerifySellerState extends State<VerifySeller> {
                               endIndent: 30,
                               thickness: .5,
                               color: Theme.of(context).brightness ==
-                                  Brightness.dark
+                                      Brightness.dark
                                   ? Colors.red
                                   : Colors.blue,
                             ),
@@ -461,81 +466,96 @@ class _VerifySellerState extends State<VerifySeller> {
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(25),
                                   onTap: !processing
-                                      ? () {
-                                    if (!_formKey.currentState!
-                                        .validate()) {
-                                    } else if (gender.isEmpty) {
-                                      Fluttertoast.showToast(
-                                          msg:
-                                          'Please select your gender',
-                                          // textColor: Colors.red,
-                                          toastLength: Toast.LENGTH_LONG);
-                                    }else if ((DateTime.now().year -
-                                        dateTime.year) <
-                                        18) {
-                                      Fluttertoast.showToast(
-                                          msg:
-                                          'provide a valid date of birth',
-                                          //textColor: Colors.red,
-                                          toastLength: Toast.LENGTH_LONG);
-                                    } else {
-                                      setState(() {
-                                        validated = true;
-                                        processing = true;
-                                        id = idnumber.text;
-                                      });
-                                      firestore.collection('userSell').doc(user!.uid).set({
-                                        //'accountnumber':accountNumber.value,
-                                        'company':company.text,
-                                        'idnumber':idnumber.text,
-                                        'uid':user!.uid,
-                                        'gender':gender,
-                                        'DOB':dateTime,
+                                      ? () async{
+                                          if (!_formKey.currentState!
+                                              .validate()) {
+                                          } else if (gender.isEmpty) {
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    'Please select your gender',
+                                                // textColor: Colors.red,
+                                                toastLength: Toast.LENGTH_LONG);
+                                          } else if ((DateTime.now().year -
+                                                  dateTime.year) <
+                                              18) {
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    'provide a valid date of birth',
+                                                //textColor: Colors.red,
+                                                toastLength: Toast.LENGTH_LONG);
+                                          } else {
+                                            prefs = await SharedPreferences.getInstance();
+                                            prefs!.setString('phone', phonenumber.text).then((value) => print(prefs!.getString('phone')),);
 
-                                      }).then((value){
-                                        Navigator.of(context).pushReplacementNamed('/myitems');
-                                        setState(() {
-                                          processing = false;
-                                        });
-                                      });
-                                    }
-                                  }
+                                            setState(() {
+                                              validated = true;
+                                              processing = true;
+                                              id = idnumber.text;
+                                            });
+                                            firestore
+                                                .collection('userSell')
+                                                .doc(user!.uid)
+                                                .set({
+                                              //'accountnumber':accountNumber.value,
+                                              'phone': phonenumber.text,
+                                              'company': company.text,
+                                              'idnumber': idnumber.text,
+                                              'uid': user!.uid,
+                                              'gender': gender,
+                                              'DOB': dateTime,
+                                            }).then((value) {
+                                              // Navigator.of(context).pushReplacementNamed('/myitems');
+                                              // setState(() {
+                                              //   processing = false;
+                                              // });
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProfileExisting(
+                                                          categoryVal:
+                                                              dropdownvalue,
+                                                        )),
+                                              );
+                                            });
+                                          }
+                                        }
                                       : () {
-                                    Fluttertoast.showToast(
-                                        msg: 'please wait...');
-                                  },
+                                          Fluttertoast.showToast(
+                                              msg: 'please wait...');
+                                        },
                                   child: !processing
                                       ? Container(
-                                    height: 50,
-                                    width: 150,
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(25),
-                                      color:
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.red
-                                          : Colors.blue,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Continue',
-                                          style: _style.copyWith(
-                                              color: Colors.white),
-                                        ),
-                                        const Icon(
-                                          CupertinoIcons.forward,
-                                          color: Colors.white,
+                                          height: 50,
+                                          width: 150,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.dark
+                                                    ? Colors.red
+                                                    : Colors.blue,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Continue',
+                                                style: _style.copyWith(
+                                                    color: Colors.white),
+                                              ),
+                                              const Icon(
+                                                CupertinoIcons.forward,
+                                                color: Colors.white,
+                                              )
+                                            ],
+                                          ),
                                         )
-                                      ],
-                                    ),
-                                  )
                                       : const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
+                                          child: CircularProgressIndicator(),
+                                        ),
                                 ),
                               ),
                             )
@@ -555,15 +575,13 @@ class _VerifySellerState extends State<VerifySeller> {
 class DeptDialog extends StatefulWidget {
   const DeptDialog(
       {Key? key,
-        required this.document,
-        required this.id,
-        required this.company
-        })
+      required this.document,
+      required this.id,
+      required this.company})
       : super(key: key);
   final String document;
   final String id;
   final String company;
-
 
   @override
   _DeptDialogState createState() => _DeptDialogState();
@@ -573,66 +591,88 @@ class _DeptDialogState extends State<DeptDialog> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   TextEditingController accNoController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  // String cat='';
+  // SharedPreferences? pref;
+  // getDetails()async{
+  //   pref = await SharedPreferences.getInstance();
+  //   cat= pref!.getString('category')!;
+  // }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   getDetails();
+  //
+  //   super.initState();
+  // }
   @override
   Widget build(BuildContext context) {
+    // if(cat.isEmpty){
+    //   return Center(
+    //     child: CupertinoActivityIndicator(),
+    //   );
+    // }
     return Form(
       key: _formKey,
       child: CupertinoAlertDialog(
         title: Text(widget.document == 'equity' ? 'Equity Bank' : ''),
         content: StreamBuilder<DocumentSnapshot>(
             stream:
-            firestore.collection('banks').doc(widget.document).snapshots(),
+                firestore.collection('banks').doc(widget.document).snapshots(),
             builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
               return snapshot.hasData
                   ? Material(
-                color: Colors.transparent,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        'please provide your account number below for authorization'),
+                      color: Colors.transparent,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              'please provide your account number below for authorization'),
+                          Text(
+                              'identification number: ${widget.id.isEmpty ? 'not provided' : widget.id}'),
+                          Divider(),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: TextFormField(
+                              controller: accNoController,
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return 'account number is required';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                fillColor: Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Colors.blue.withOpacity(.1)
+                                    : Colors.red.withOpacity(.1),
+                                filled: true,
+                                labelText: 'account number',
+                                labelStyle: _style.copyWith(fontSize: 12),
 
-                    Text('identification number: ${widget.id.isEmpty?'not provided':widget.id }'),
-                    Divider(),
-
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: TextFormField(
-                        controller: accNoController,
-                        validator: (val) {
-                          if (val == null || val.isEmpty) {
-                            return 'account number is required';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          fillColor: Theme.of(context).brightness ==
-                              Brightness.light
-                              ? Colors.blue.withOpacity(.1)
-                              : Colors.red.withOpacity(.1),
-                          filled: true,
-                          labelText: 'account number',
-                          labelStyle: _style.copyWith(fontSize: 12),
-
-                          // border: OutlineInputBorder(
-                          //     borderRadius:
-                          //         BorderRadius.circular(10))
-                        ),
+                                // border: OutlineInputBorder(
+                                //     borderRadius:
+                                //         BorderRadius.circular(10))
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              )
+                    )
                   : Container();
             }),
         actions: [
-          TextButton(onPressed: () {
-            Navigator.of(context).pop();
-          }, child: Text('cancel')),
-          TextButton(onPressed: () {
-            accountNumber = ValueNotifier(accNoController.text);
-            Navigator.of(context).pop();
-          }, child: Text('OK'))
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('cancel')),
+          TextButton(
+              onPressed: () {
+                accountNumber = ValueNotifier(accNoController.text);
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'))
         ],
       ),
     );

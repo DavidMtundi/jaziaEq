@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,28 +15,48 @@ var date = ValueNotifier<DateTime>(DateTime.now());
 
 @immutable
 class ProfileExisting extends StatefulWidget {
-  const ProfileExisting({Key? key}) : super(key: key);
+  String? categoryVal;
+   ProfileExisting({Key? key, this.categoryVal}) : super(key: key);
 
   @override
   _ProfileExistingState createState() => _ProfileExistingState();
 }
 
 class _ProfileExistingState extends State<ProfileExisting> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late Future<String> _inst;
 
 
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 
+  String cat='';
+  SharedPreferences? pref;
+  getDetails()async{
+    pref = await SharedPreferences.getInstance();
+    setState(() {
+      cat= pref!.getString('category')!;
+    });
 
-  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('business')
-      .doc('electronics')
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    getDetails();
+
+    super.initState();
+  }
+
+/*  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('business')
+      .doc(widget.categoryVal)
       .collection('items')
-      .snapshots();
+      .snapshots();*/
   @override
   Widget build(BuildContext context) {
+    if(cat.isEmpty){
+      return Center(
+        child: CupertinoActivityIndicator(),
+      );
+    }
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -109,7 +130,11 @@ class _ProfileExistingState extends State<ProfileExisting> {
                           height: 5,
                         ),
                         StreamBuilder<QuerySnapshot>(
-                          stream: _usersStream,
+                          stream: firestore.collection('business')
+                              .doc(cat)
+                              .collection('items')
+                              .where('uid', isEqualTo: _auth.currentUser!.uid)
+                              .snapshots(),
                           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.hasError) {
                               return const Text('Something went wrong');

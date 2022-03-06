@@ -126,7 +126,7 @@ class _MyAppState extends State<MyApp> {
           '/mt940download': (context) => Mt940Screen(),
           '/registernewform': (context) => const RegisterNewForm(),
           '/registerform': (context) => const RegisterForm(),
-          '/myitems': (context) => const ProfileExisting(),
+          '/myitems': (context) => ProfileExisting(),
           '/indevelopment': (context) => const InDevelopment(),
           '/verifyseller': (context) => const VerifySeller(),
         },
