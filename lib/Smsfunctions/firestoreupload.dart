@@ -13,32 +13,35 @@ class FirestoreQueries {
         .collection("transactions")
         .doc(msgtype)
         .collection(status)
-        .doc(date.substring(0, 9))
+        .doc(date.substring(0, 10))
         .update({
       'amount': FieldValue.arrayUnion([amount]),
-      'date': date.substring(0, 9)
+      'date': date.substring(0, 10)
     });
   }
 
   ///msg type is the
-  Future savecustomMessages(String msgtype, List<SmsMessage> transactions,
-      String status, String id) async {
-    for (int i = 0; i < transactions.length; i++) {
-      try {
-        final amount = checkRegex.getAmount(transactions[i].body.toString());
+  Future savecustomMessages( List<SmsMessage> transactions,
+  String id) async {
+    int count = transactions.length>100?100:transactions.length;
+    for (int i = 0; i < count; i++) {
+     if(CheckRegex(). getAmount(transactions[i].body.toString())!=0.0){ try {
         final savemessages =
             FirebaseFirestore.instance.collection("users").doc(id);
-        savemessages
+      await  savemessages
             .collection("transactions")
-            .doc(msgtype)
-            .collection(status)
-            .doc(transactions[i].date.toString())
+            .doc( transactions[i].sender.toString(),
+)
+            .collection(CheckRegex().getStatus(transactions[i].body.toString()))
+            .doc(transactions[i].date.toString().substring(0,10))
             .set({
-          'amount': FieldValue.arrayUnion([amount]),
+              'uid':id,
+              'date':transactions[i].date.toString().substring(0,10),
+          'amount': FieldValue.arrayUnion([CheckRegex(). getAmount(transactions[i].body.toString())]),
         },SetOptions(merge:true));
       } catch (e) {
         print(e.toString());
-      }
+      }}
     }
   }
 }
