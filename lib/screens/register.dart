@@ -499,14 +499,15 @@ class _RegisterFormState extends State<RegisterForm> {
                                               lastName = lastname.text;
                                               id = idnumber.text;
                                             });
-                                            firestore.collection('users').doc().set({
+                                            firestore.collection('users').doc(user!.uid).set({
                                               'accountnumber':accountNumber.value,
                                               'idnumber':idnumber.text,
                                               'first_name':firstname.text,
                                               'last_name':lastname.text,
                                               'uid':user!.uid,
                                               'gender':gender,
-                                              'DOB':dateTime
+                                              'DOB':dateTime,
+                                              'linked':true,
 
                                             }).then((value){
                                               Navigator.of(context).pop();

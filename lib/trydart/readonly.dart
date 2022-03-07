@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jazia/custom_widgets/imagewidget.dart';
 import 'package:jazia/main.dart';
+import 'package:jazia/screens/categoryseller.dart';
 import 'package:jazia/trydart/uploadonly.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,13 +29,25 @@ class _ProfileExistingState extends State<ProfileExisting> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  String? category;
 
-  String cat='';
+  Future<void> getCategory() async {
+    firestore.collection('userSell').doc(_auth.currentUser!.uid).get().then((value) {
+      var getcategory = value['category'];
+      setState(() {
+        category = getcategory;
+      });
+      print(category);
+    });
+  }
+
+
+  String cat='electronics';
   SharedPreferences? pref;
   getDetails()async{
     pref = await SharedPreferences.getInstance();
     setState(() {
-      cat= pref!.getString('category')!;
+      cat = pref!.getString('category')!;
     });
 
   }
@@ -42,9 +55,12 @@ class _ProfileExistingState extends State<ProfileExisting> {
   void initState() {
     // TODO: implement initState
     getDetails();
+    getCategory();
 
     super.initState();
   }
+
+
 
 /*  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('business')
       .doc(widget.categoryVal)
@@ -52,6 +68,19 @@ class _ProfileExistingState extends State<ProfileExisting> {
       .snapshots();*/
   @override
   Widget build(BuildContext context) {
+
+    String? dropdownvalue = category;
+    var items = [
+      'electronics',
+      'art',
+      'clothing',
+      'phones',
+      'property',
+      'construction equipment',
+      'toys',
+      'vehicles',
+    ];
+
     if(cat.isEmpty){
       return Center(
         child: CupertinoActivityIndicator(),
@@ -129,9 +158,28 @@ class _ProfileExistingState extends State<ProfileExisting> {
                         const Divider(
                           height: 5,
                         ),
+                        DropdownButton(
+                          value: dropdownvalue,
+                            icon: const Icon(Icons.keyboard_arrow_down),
+                            items: items.map((String items) {
+                              return DropdownMenuItem(
+                                value: items,
+                                child: Text(items),
+                              );
+                            }).toList(),
+                            onChanged:  (String? newValue) async {
+
+                                dropdownvalue = newValue!;
+                                category = newValue;
+                              setState(() { });
+                            },
+                        ),
+                        const Divider(
+                          height: 5,
+                        ),
                         StreamBuilder<QuerySnapshot>(
                           stream: firestore.collection('business')
-                              .doc(cat)
+                              .doc(category)
                               .collection('items')
                               .where('uid', isEqualTo: _auth.currentUser!.uid)
                               .snapshots(),
@@ -152,6 +200,7 @@ class _ProfileExistingState extends State<ProfileExisting> {
                                   wig_name: data['name'],
                                   wig_price: data['price'],
                                   wig_url: data['url'],
+                                  wig_contact: data['phone'],
                                 );
                                 /*ListTile(
                                   leading: CircleAvatar(
@@ -213,7 +262,10 @@ class _ProfileExistingState extends State<ProfileExisting> {
         distance: 112.0,
         children: [
           ActionButton(
-            onPressed: () => print('GHI'),
+            onPressed: () async {
+              print('GHI');
+              getCategory();
+            },
             icon: const Icon(Icons.help_outline),
           ),
           ActionButton(
@@ -221,7 +273,12 @@ class _ProfileExistingState extends State<ProfileExisting> {
             icon: const Icon(Icons.settings_outlined),
           ),
           ActionButton(
-            onPressed: () => print('DEF'),
+            onPressed: () async{
+              print('DEF');
+              //showDialog(context: context, builder: (context){
+                //return CategorySeller(wig_category: category,);
+              //});
+            },
             icon: const Icon(Icons.list),
           ),
           ActionButton(

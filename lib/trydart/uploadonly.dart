@@ -75,12 +75,22 @@ class _UploadDialogBoxState extends State<UploadDialogBox> {
   }
   /// Random Color Value
   ///
-
+String? namba;
   Random rnd = new Random();
   var lst = [
     '0xffa9a3b2', '0xffa9a9a9', '0xffc7b02f', '0xff990099', '0xff009900', '0xff000743', '0xffbc0033', '0xff005e64', '0xff4e4e4e',
     '0xff3e3e3e', '0xffcc033', '0xff7e0008', '0xff00bc89', '0xfffb5261', '0xff007009', '0xff0068d2', '0xff8b4f00', '0xff466700'
   ];
+
+  Future<void> getNamba() async{
+    firestore.collection('userSell').doc(_auth.currentUser!.uid).get().then((value) {
+      var getnamba = value['phone'];
+      setState(() {
+        namba = getnamba;
+      });
+      print(namba);
+    });
+  }
 
   void main() {
     var element = lst[rnd.nextInt(lst.length)];
@@ -114,7 +124,7 @@ class _UploadDialogBoxState extends State<UploadDialogBox> {
     //todo: upload values to field remaining and uploaded
     await firestore
         .collection('business')
-        .doc('electronics')
+        .doc(dropdownvalue)
         .collection('items')
         .doc(_controller.text)
         .set({'colorVal': colorVal,
@@ -122,7 +132,7 @@ class _UploadDialogBoxState extends State<UploadDialogBox> {
       'price': int.parse(_controller2.text),
       'description': _controller3.text,
       'url': '$downloadUrl',
-      'phone': pref!.getString('phone'),
+      'phone': namba,
       'uid': _auth.currentUser!.uid,
       'category':dropdownvalue,
     },SetOptions(merge: true)).then((value) {
@@ -174,6 +184,12 @@ class _UploadDialogBoxState extends State<UploadDialogBox> {
       }
     });
   }*/
+  @override
+  void initState() {
+    // TODO: implement initState
+    getNamba();
+    super.initState();
+  }
   @override
   void dispose() {
     if (mounted){

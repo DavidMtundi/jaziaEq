@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GetDetail extends StatefulWidget {
-  String wig_detail, wig_name;
-  GetDetail({Key? key, required this.wig_detail, required this.wig_name})
+  String wig_detail, wig_name, wig_contact;
+  GetDetail({Key? key, required this.wig_detail, required this.wig_name, required this.wig_contact})
       : super(key: key);
 
   @override
@@ -30,23 +31,42 @@ class _GetDetailState extends State<GetDetail> {
       content: Text(widget.wig_detail.toString()),
       actions: <Widget>[
         TextButton(
-            onPressed: () {},
+            onPressed: () async{
+              //Navigator.of(context).pop();
+              const url = 'https://google.com';
+              if(await canLaunch(url)){
+                await launch(url,forceSafariVC: true);
+              }else {
+                throw 'Could not launch $url';
+              }
+            },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: const [
-                Icon(CupertinoIcons.question_circle),
-                Text('Is it Available'),
+                Icon(CupertinoIcons.search_circle),
+                Text('Browse item'),
               ],
             )),
         TextButton(
-            onPressed: () {},
+            onPressed: () async{
+              //Navigator.of(context).pop();
+              print('tapped');
+              try{
+                if(await canLaunch('tel:${widget.wig_contact}')){
+              await launch('tel:${widget.wig_contact}');
+              }
+              //await canLaunch('tel:0722494071');
+              } catch(e){print(e);
+              }
+            },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                Text('0722494071'),
+              children: [
+                Text(widget.wig_contact),
                 Icon(CupertinoIcons.phone),
               ],
-            )),
+            )
+        ),
       ],
     );
   }

@@ -37,7 +37,6 @@ class _GridWidgetState extends State<GridWidget> {
                                   landstream = pref!.getString('landStream');
                                    widget.tap(landstream);
                                   // print(landstream);
-
                                 },
                                 child: Card(
                                   elevation: 11,

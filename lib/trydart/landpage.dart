@@ -375,6 +375,7 @@ name=nm;
                               wig_name: data['name'],
                               wig_price: data['price'],
                               wig_url: data['url'],
+                              wig_contact: data['phone'],
                             );
                             /*ListTile(
                                       leading: CircleAvatar(

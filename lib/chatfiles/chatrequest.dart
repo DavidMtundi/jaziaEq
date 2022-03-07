@@ -105,29 +105,6 @@ class _ChatReqState extends State<ChatReq> {
                           }
                         });
 
-                        /*await firestore
-                            .collection('userSell')
-                            .doc(_auth.currentUser!.uid)
-                            .collection('messages')
-                            .doc(data['User'])
-                            .set({
-                          'messages': FieldValue.arrayUnion([
-                            {
-                              'message':data['Message'],
-                              'name':_auth.currentUser!.displayName,
-                              'type':'m',
-                              'time':DateTime.now(),
-                              'image':['https://testme','https://testme1',]
-                            },
-                          ])
-                        },SetOptions(merge: true))
-                            .then((value) =>  Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChatPage(
-                                    appbar_name: data['Name'],
-                                    uid: data['User']
-                                ))));*/
                       },
                       child: ListTile(
                           leading: CircleAvatar(

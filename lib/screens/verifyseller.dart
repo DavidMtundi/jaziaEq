@@ -503,6 +503,7 @@ class _VerifySellerState extends State<VerifySeller> {
                                               'uid': user!.uid,
                                               'gender': gender,
                                               'DOB': dateTime,
+                                              'category':dropdownvalue,
                                             }).then((value) {
                                               // Navigator.of(context).pushReplacementNamed('/myitems');
                                               // setState(() {

@@ -597,6 +597,7 @@ ScrollController scrollController = ScrollController();
 
 
                                         }).then((value){
+                                          firestore.collection('users').doc(user!.uid).set({'linked': true}, SetOptions(merge: true));
                                           Navigator.of(context).pop();
                                           setState(() {
                                             processing = false;
